@@ -1,0 +1,139 @@
+addi $t0, $s0, 0   # Copy the base address of array A from $s0 to $t0
+addi $t1, $s1, 0   # Copy the base address of array B from $s1 to $t1
+loop:
+lw $t3, 0($t0)    # Load an element from array A into $t3
+lw $t4, 0($t1)    # Load an element from array B into $t4
+slt $t5, $t4, $t3  # Compare elements $t4 and $t3, set $t5 to 1 if $t4 < $t3
+beq $t5, $zero, skip  # Branch to "skip" if $t4 is not less than $t3
+sw $t4, 0($t0)    # Store the value in $t4 back to array A
+sw $t3, 0($t1)    # Store the value in $t3 back to array B
+skip:
+addi $t0, $t0, 4  # Move the pointer in array A to the next element (increment by 4 bytes)
+addi $t1, $t1, 4  # Move the pointer in array B to the next element (increment by 4 bytes)
+bne $t3, $zero, loop  # Branch back to "loop" if $t3 is not zero
+
+
+a. The purpose of register $t1 in this code is to iterate through 
+the elements of array B. It is used to load elements from array B 
+and store them into array A when necessary.
+
+b. The code essentially swaps elements between arrays A and B whenever 
+an element in B is smaller than the corresponding element in A.
+
+array A = {3, 4, 1, 2, 0, 0, 0, 0} 
+array B = {7, 4, 5, 6, 1, 5, 9, 9}
+
+c. To determine the number of store word operations performed,
+ we can count the number of times the "sw" instruction is executed 
+ inside the loop. Since each "sw" instruction writes a 32-bit integer 
+ (4 bytes), and there are eight iterations of the loop (one for each element in the arrays), 
+the number of store word operations performed is 8.
+
+16
+
+d. -7
+e. 
+Line A: The corresponding pseudo-instruction is 
+"if $t4 < $t3, set $t5 to 1, else set $t5 to 0."
+
+Line B: The corresponding pseudo-instruction is 
+"if $t5 is equal to zero, branch to the 'skip' label."
+
+
+1a.
+.data
+string:    .asciiz "abcdeedcba"  # Example string
+
+.text
+main:
+    # Variable initialization
+    li $s0, 0         # low = 0
+    li $s5, 10        # size of the string
+    subi $s1, $s5, 1  # high = size - 1
+    li $s3, 1         # matched = 1 (assume it's a palindrome)
+
+loop:
+    # Check if low < high
+    bge $s0, $s1, done  # Exit loop if low >= high
+
+    # Load characters from the string
+    lb $t0, 0($s4)     # Load string[low] into $t0
+    lb $t1, 0($s4)     # Load string[high] into $t1
+
+    # Compare characters
+    beq $t0, $t1, increment_indices  # If characters are equal, increment low and decrement high
+    li $s3, 0          # If characters are not equal, set matched to 0 and exit loop
+    j done
+
+increment_indices:
+    addi $s0, $s0, 1   # Increment low
+    subi $s1, $s1, 1   # Decrement high
+    j loop
+
+done:
+    # At this point, $s3 contains the value of "matched"
+    # You can use $s3 as needed in the rest of your program
+
+
+1b.
+.data
+string:    .asciiz "abcdeedcba"  # Example string
+
+.text
+main:
+    # Variable initialization
+    la $s4, string     # Load the base address of the string
+    li $s0, 0         # low = 0
+    li $s5, 10        # size of the string
+    subi $s1, $s5, 1  # high = size - 1
+    li $s3, 1         # matched = 1 (assume it's a palindrome)
+
+loop:
+    # Check if low < high
+    bge $s0, $s1, done  # Exit loop if low >= high
+
+    # Load characters from the string using array pointer
+    lb $t0, 0($s4)     # Load *string into $t0 (string[low])
+    lb $t1, 0($s4)     # Load *string into $t1 (string[high])
+
+    # Compare characters
+    beq $t0, $t1, increment_indices  # If characters are equal, increment low and decrement high
+    li $s3, 0          # If characters are not equal, set matched to 0 and exit loop
+    j done
+
+increment_indices:
+    addi $s0, $s0, 1   # Increment low
+    addi $s4, $s4, 1   # Increment the array pointer (move to the next character)
+    subi $s1, $s1, 1   # Decrement high
+    j loop
+
+done:
+    # At this point, $s3 contains the value of "matched"
+    # You can use $s3 as needed in the rest of your program
+
+
+2a. 
+add $s1, $s1, $t0
+Binary: 00000010001010001000100000100000
+Hex: 0x02288820
+
+ADDI $s1 $zero 0x0000
+Binary: 00100000000100010000000000000000
+Hex: 0x20110000
+Opcode (6 bits): 001000
+Source Register (rs) (5 bits): 00000
+Destination Register (rd) (5 bits): 10001
+Immediate Value (16 bits): 0000000000000000
+Function Code (6 bits): 000000
+
+BEQ $t0 $zero 0x0002 (jump 2 ahead)
+Binary: 00010001000000000000000000000010
+Hex: 0x11000002
+
+ADDI $s1 $s1 0x0001
+Binary: 00100010001100010000000000000001
+Hex: 0x22310001
+
+J 0x0000003
+Binary: 00001000000000000000000000000011
+Hex: 0x08000003
