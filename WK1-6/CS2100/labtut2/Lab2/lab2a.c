@@ -1,19 +1,23 @@
 #include <stdio.h>
 
 void display(int);
-void arraysize(int[], int);
 
 int main() {
-  int ageArray[] = {2, 15, 4, 23};
-  display(ageArray[0]);
-  arraysize(ageArray, sizeof(ageArray) /
-                          sizeof(ageArray[0])); // Calculate and pass array size
-  return 0;
+    int ageArray[] = { 2, 15, 4, 23 };
+    display(ageArray[2]);
+
+    // Calculate the number of elements in ageArray
+    int numElements = sizeof(ageArray) / sizeof(ageArray[0]);
+
+    // Print the element and the size of the array
+    printf("Size of the array is %d\n", numElements);
+
+    return 0;
 }
 
-void display(int age) { printf("%d\n", age); }
-
-void arraysize(int arr[], int size) { printf("Size of the array is %d\n", size); }
+void display(int age) {
+    printf("%d\n", age);
+}
 
 // original output is 4
 // What is the purpose of the operator sizeof? What datatype will sizeof
@@ -32,3 +36,4 @@ void arraysize(int arr[], int size) { printf("Size of the array is %d\n", size);
 //                 .The char data type is defined to always occupy exactly one
 //                     byte in memory on all architectures.Therefore,
 //     sizeof(char) will always be 1 regardless of the system.
+

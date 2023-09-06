@@ -126,6 +126,9 @@ Destination Register (rd) (5 bits): 10001
 Immediate Value (16 bits): 0000000000000000
 Function Code (6 bits): 000000
 
+0x00084042
+loop: srl $t0, $t0, 1
+
 BEQ $t0 $zero 0x0002 (jump 2 ahead)
 Binary: 00010001000000000000000000000010
 Hex: 0x11000002
@@ -137,3 +140,54 @@ Hex: 0x22310001
 J 0x0000003
 Binary: 00001000000000000000000000000011
 Hex: 0x08000003
+
+add $s1, $s1, $t0
+ADDI $s1 $zero 0x0000
+loop: srl $t0, $t0, 1
+BEQ $t0 $zero 0x0002
+ADDI $s1 $s1 0x0001
+j loop
+exit
+
+3b.
+$s1 is initially set to 0. In each iteration of the loop, 
+$s1 is incremented by 1, and $t0 is divided by 2. 
+This process continues until $t0 becomes 0, at which point s1 will 
+contain the count of how many times $t0 was divided by 2.
+
+4a. 
+loop:
+    slt $t9, $s3, $s2   # Check if low > high
+    bne $t9, $zero, end # If low > high, exit the loop (not found)
+
+    add $s4, $s2, $s3  # Calculate mid: (low + high) / 2
+    sll $s4, $s4, 1    # Divide mid by 2 (shift left by 1 bit)
+
+    sll $t0, $s4, 2    # Calculate t0: mid * 4 (bytes)
+    add $t0, $s0, $t0  # Calculate the address of array[mid] in bytes
+    lw $t1, 0($t0)     # Load array[mid] into t1
+
+    slt $t9, $s1, $t1  # Compare target with array[mid]
+    beq $t9, $zero, bigger  # If (target < array[mid]), go to "bigger" label
+
+    addi $s3, $s4, -1  # high = mid - 1
+    j loopEnd           # Jump to loopEnd
+
+bigger:
+    addi $s2, $s4, 1   # low = mid + 1
+    j loopEnd           # Jump to loopEnd
+
+equal:
+    add $s5, $s4, $zero  # ans = mid
+    j loopEnd            # Jump to loopEnd
+
+loopEnd:
+    # The loop ends here
+    # Set ans to -1 (not found)
+    li $s5, -1
+
+end:
+    # The complete binary search implementation
+
+4b. 17
+4c. 
