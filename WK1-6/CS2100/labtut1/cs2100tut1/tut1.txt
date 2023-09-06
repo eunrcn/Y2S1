@@ -1,0 +1,78 @@
+q1
+when padding 1s for 2-complement, it will still be the same value 
+bc the rightmost value will be -ve and it gets more powerful everytime 
+it gets more left
+
+sign extention is important bc we can use it to perform subtraction
+why cannot perform substractino directly -> simpler to just use addition 
+module without adding a subtraction module
+
+q2a:
+(pad front and back to have 0)
+0101.11 - 010.0101
+0101.1100 - 0010.0101
+0101.1100 + (- 0010.0101)
+0101.1100 + (1101.1010)
+10011.0110
+
+add overflow into final value 
+2s-complement = overflow throw alway
+1s-complement = overflow stay
+
+0011.0110 + 1
+0011.0111
+
+q2b:
+0010111.101 – 0111010.110
+0010111.101 +(– 0111010.110)
+0010111.101 + 1000101.001
+
+
+3a:
+0.75 x2
+1.5 x2
+1.0
+
+(0.11)2
+
+3b:
+-2.50
+take positive senario first
+2.5=0010.100
+from right to left, keep everything until reach 1
+everything else just flip
+(-0010.100)=1101.100
+
+3c:
+3.876 = 0011.??
+
+0.876 x2
+1.752 x2
+1.504 x2
+1.008 x2
+0.016
+check the fourth one to see if need to round up
+if forth digit is 1 then +1
+in this case there is no rounding
+
+3d:
+0.1 x2
+0.2 x2
+0.4 x2
+0.8 x2
+1.6
+
+0010.001
+bc round up
+
+4:
+sign bit - 8 bit exponent - 23 bit mantissa
+–0.078125 = -(0.000101)2 = -(1.01)2 x 2 power -4
+
+exponent: -4+127 = 123=(01111011)2
+mantissa: .01 = 01000000000000000000000
+sign bit: 1 for negative
+
+change into hexadecimal: BDA00000
+
+

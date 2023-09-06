@@ -1,0 +1,3 @@
+i-format:
+-opcode since no function field, opcode uniquely specifies an instruction
+-rs

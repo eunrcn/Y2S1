@@ -1,0 +1,20 @@
+uniform cost search at one time explore path cost of certain cost
+
+greedy bfs dont consider cost so far
+a star search is summation of cost so far and heuristic
+
+a star search only optimal if admissible heuristic
+heuristic less than or equal to true cost, dont be over estimation
+ 
+
+The minimax algorithm is optimal against optimal MIN players, 
+but not against non-optimal MIN players
+
+alpha more than or equals to beta then that value will be pruned
+min means beta will be changed
+max mins alpha changed
+
+max
+min 
+max
+min

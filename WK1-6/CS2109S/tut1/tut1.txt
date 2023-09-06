@@ -1,0 +1,176 @@
+q1:
+Sudoku Game:
+Fully vs Partially Observable:
+Fully Observable: In a fully observable environment, an agent can directly perceive the complete state of the environment at any given moment. It has access to all relevant information.
+
+Single vs Multi-Agent:
+Single-Agent
+The player interacts with the Sudoku puzzle as the sole decision-maker.
+
+Deterministic vs Stochastic:
+Deterministic
+The outcome is determined by the logical rules of Sudoku, and there's no randomness involved.
+
+Episodic vs Sequential:
+Episodic
+Each move by the player is separate and doesn't depend on previous moves in the same game.
+
+Static vs Dynamic:
+Static
+The Sudoku grid remains unchanged unless the player makes a move.
+
+Discrete vs Continuous:
+Discrete
+The possible moves (filling in numbers) are discrete and well-defined.
+
+
+q2:
+PEAS for Sudoku Game:
+Performance Measure: The accuracy and efficiency of solving the Sudoku puzzle, measured by the number of correct numbers placed and the time taken to complete the puzzle.
+Environment: A grid of cells where each cell must be filled with a number according to the Sudoku rules. The environment also includes the initial numbers given in the grid.
+Actuators: The player's actions involve selecting empty cells and placing valid numbers in them based on the Sudoku rules.
+Sensors: The player's eyesight (visual perception) to observe the initial numbers and the numbers they place in the grid. Mental processes are also involved in determining valid numbers.
+
+SIRI Function on iPhones:
+Performance Measure:
+Effectiveness of voice recognition and response accuracy.
+Efficiency in processing user requests.
+Responsiveness in providing relevant information.
+
+Environment:
+ios device with functional audio input system
+The iPhone's digital environment, including the user's voice input and potential queries.
+Network connectivity to access data.
+
+Actuators:
+speaker -> Voice synthesis to provide spoken responses.
+Data retrieval and interaction with various iPhone features like setting alarms, sending messages, etc.
+
+Sensors:
+Microphone to capture user's voice inputs.
+Touchscreen and sensors to recognize other user interactions.
+Network connectivity to access external data.
+
+3:
+(a) Representation of a State:
+((l1, l2, l3), (m1,m2,m3) (r1,r2,r3))
+disks in each tuple are arranged in ascending order based on their diameter
+representation invariant
+A state in the Tower of Hanoi problem can be represented as a set of three pegs, each containing a stack of disks. Each disk can be represented by its diameter, and the order of disks on each peg indicates their arrangement.
+(b) Representation Invariant:
+The representation invariant of this state representation is that the disks must be in decreasing order of diameter from bottom to top on each peg. This means no larger disk should be placed on top of a smaller disk on any peg.
+The total number of possible configurations in the actual problem is 2^n - 1, where n is the number of disks. This accounts for all possible combinations while adhering to the rules of Tower of Hanoi.
+
+
+(c) Initial and Goal States:
+initial:((l1,l2,l3),(),())
+goal state:((l1,l2,l3),(),())
+Initial State: All disks are placed on the left peg in decreasing order of diameter.
+Goal State: All disks are placed on the right peg in the same decreasing order of diameter.
+
+(d) Actions:
+The only allowed action is to move a single disk from the top of one peg to the top of another peg, while adhering to the rule that no larger disk can be placed on top of a smaller one.
+left to middle
+left to right
+middle to left
+middle to right
+right to left
+right to middle
+
+(e) Transition Function T:
+Upon applying the defined action to a current state, the resulting next state is determined by moving the top disk from one peg to the top of another peg. The representation invariant ensures that the resulting state remains valid.
+
+For example, if you move a disk from peg A to peg B:
+The top disk from peg A is removed.
+The top disk from peg B remains the same (if any).
+The moved disk is placed on top of peg B (if allowed by the representation invariant).
+T((current state)(action)) generate next state 
+
+
+q4:
+uniform cost search:
+always select the node with least path cost for expansion
+can use graph and tree search to implement this
+
+graph search:
+start from s -> a1,b5,c15
+expand to a -> g11 (s wont be generated bc visited)
+expand to b -> g10 (optimal solution)
+expand to g goal! 
+
+tree search:
+start from s -> a1,b5,c15
+expand to a -> s2 and g11
+expand to s -> a3,b7,c17
+expand to a -> s4 and g13
+
+q4d:
+dijkstra's algo
+shortest path to every node from source
+wont stop once find G
+s->a->b->g(from b)->c(from g)
+once all nodes are reached with the shortest path cost
+terminate
+
+
+q5:
+(if goal is on rightmost bottom node)
+iterative deepening search
+- limit 0 -> visit starting node
+- limit 1 -> visit 2 child node
+- limit 2 -> visit 4 child node (1+2+4 nodes)
+- limit 3 -> visit 8 child node (1+2+4+8 nodes)
+node generated: b0 + (b0 + b1) + (b0 + b1 +b2)
+b0 + b1 + ... + bd
+time complexity: O(b to power of d)
+
+DFS:
+start from start (layer 0)
+generate 2 child node (b to power of 1 generated)
+go left child (layer 1)
+generate 2 child node (b to power of 2 generated)
+go left child (layer 2)
+generate 2 child note (b to power of 3 generated)
+
+backtrack and explore right child node and generate 
+time complexity: O(b to power of d)
+
+(but if goal is on leftmost bottom node)
+ids:
+in the last iteration, the dth layer
+number of nodes generated is:
+b0 
++ (b0 + b1) 
++ (b0 + b1 +b2)
++ ...
++ (b0 + b1 + ... + bd-1)
++ (b0 + b1 + ... + bd-1 + 1)
+dont need to fully extent to rest of last depth b power d,
+only need extend to one node in the last row
+time complexity: O(b power d-1)
+remove last d
+
+dfs:
+only need to explore left side
+1 + bd = O(bd)
+d is the depth
+b is the number of child node
+
+ids will be better than dfs if node is higher up in depth
+
+
+
+In this state space:
+
+There is only one path that leads to the goal state, which is located at a deep level of the tree.
+The other branches do not lead to the goal and are essentially dead ends.
+Now, let's compare the performance of IDS and DFS:
+
+Iterative Deepening Search (IDS):
+In each iteration, IDS explores nodes up to a certain depth limit.
+Because the goal state is located deep in the tree and only one path leads to it, IDS will spend most of its iterations exploring non-goal branches.
+As the depth limit increases, IDS will explore deeper levels of these non-goal branches, wasting a significant amount of effort before reaching the goal.
+
+Depth-First Search (DFS):
+DFS, on the other hand, starts exploring the first branch and goes as deep as possible.
+Since there's only one path that leads to the goal, DFS will efficiently follow that path without wasting time exploring irrelevant branches.
