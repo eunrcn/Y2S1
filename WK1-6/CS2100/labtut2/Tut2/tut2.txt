@@ -72,3 +72,103 @@ xori $t0, $t0, 0x000000AA: This performs a bitwise XOR operation between the val
 sll $t0, $t0, 1: This shifts the toggled bits in $t0 to the left by 1 position, aligning them with the target bits in register $s2 (variable c).
 and $s2, $s2, 0xFFFFFEB5: This performs a bitwise AND operation between the value in register $s2 (variable c) and the binary pattern 0xFFFFFEB5, which clears bits 2, 4, and 8 of $s2.
 or $s2, $s2, $t0: This performs a bitwise OR operation between the modified value of $s2 and the modified value of $t0, effectively copying the toggled bits from b into c.
+
+2 swapping
+*a = *a ^ *b
+*b = *a ^ *b
+*a = *a ^ *b
+this code saves temporary variables
+but the constraint is that it only works for integers, doesnt work for string
+if a and b are the same, xor will be 0000 as well
+
+3a. set bits of 2, 8, 9, 14,and 16 of b to 1. 
+Leave all other bits unchanged.
+
+3b. copy over bits 1,3,7 of b into a
+andi t0 s1 0b00000000000010001010 
+to get the values of b in 1,3,7 in the temp register
+cannot use or now bc i want it to be b not a or B
+so i need to clear a to have 0 so that when we do or with b, 
+is just extract b's value
+lui t1 0b1111111111111111111
+load the mask to be full of 1
+ori t1 t1 0b1111111111101110101
+and s0 s0 t1
+change the values in a so that it have 0
+then do or with b so that b values are copied over
+or s0 s0 t0
+
+
+x XOR 0 = x
+x XOR 1 = x not
+
+3c. 
+firstly invert bits in 1,3,7 in B
+xori t0 s1 0b10001010
+andi t0 t0 0b10001010
+sll t0 t0 1
+lui t1 0b1111111111111111111
+load the mask to be full of 1
+ori t1 t1 0b1111111111101110101
+and s2 s2 t1
+or s2 s2 t0
+
+# Load the values of b and c into temporary registers
+lw $t0, 0($s1)
+lw $t1, 0($s2)
+
+# Mask the bits we want to invert from b
+andi $t2, $t0, 0b00000000000010101010
+
+# Invert the masked bits
+xori $t2, $t2, 0b00000000000010101010
+
+# Clear the corresponding bits in c
+and $t1, $t1, 0b11111111111101010101
+
+# Copy the inverted bits from b to c
+or $t1, $t1, $t2
+
+# Store the result back in c
+sw $t1, 0($s2)
+
+4a. c = a + b
+add dest s1 s2
+add $s2 $s0 $s1
+
+4b. d = a + b – c 
+can either add twice to d 
+or use temp variable 
+add $s3 $s0 $s1
+add $s3 $s3 -$s2
+
+4c. 2b can either sll or add b to b
+sll s2 s1 1 -> c = 2b
+addi t0 s0 -2
+
+4d. rewrite and factorise the whole thing
+to get 3, sll 2 position (x4)
+then minus one 
+OR sll once and plus one
+
+5. 
+add $t0, $s0, $zero # make a copy of $s0 in $t0 
+lui $t1, 0x8000 
+
+lp: beq $t0, $zero, e 
+andi $t2, $t0, 1 
+
+beq  $t2, $zero, s 
+xor $s0, $s0, $t1 
+s:  srl  $t0, $t0, 1 
+j lp 
+e: 
+
+run at most 31 times bc msb is 0
+what happen in each iteration
+toggle the msb if encounter a 1 in s0
+final value of s0 in hexadecimal
+is the same except msb will be a 1
+odd number of 1s msb will be 1
+even number of 1s msb will be 0
+odd parity scheme
