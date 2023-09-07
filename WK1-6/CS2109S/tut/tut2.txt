@@ -1,0 +1,252 @@
+dominance: if h2(n) >= h1(n) for all n then h2 dominates h1, 
+h2 is better for search
+
+example: having heuristic as real path cost vs having heuristic 0 for 
+all nodes no matter what 
+the heuristic with real path cost will reach goal after generating lesser
+nodes than the one with heuristic 0
+in both case, we expand all nodes with f-values less than 7
+with heuristic fn with smaller value, will generate more node
+
+
+1.
+step 1. design a relaxed problem
+pacman can go anywhere
+step 2. real cost for relaxed problem
+h(n) = number of pallet - relaxed problem w less restriction
+
+To devise a non-trivial admissible heuristic for the simplified Pacman problem, 
+we can use a heuristic that estimates the minimum number of moves required to eat 
+all the remaining pellets while ignoring walls. This heuristic is admissible because 
+it never overestimates the true cost to reach the goal state.
+
+Here's the heuristic function:
+
+Heuristic(H): Estimate the number of moves required to eat all remaining pellets 
+ignoring walls.
+
+To implement this heuristic, you can use a simplified approach:
+
+1. Calculate the Manhattan distance from Pacman's current location to the nearest pellet.
+2. Multiply this distance by the number of remaining pellets.
+
+The intuition behind this heuristic is that the minimum number of moves 
+required to eat all the pellets without considering walls is the sum of 
+distances from Pacman to the nearest pellets, as he can move directly to 
+each pellet in turn. Multiplying this by the number of remaining pellets 
+gives us an estimate of the minimum moves required to eat all pellets in 
+the current state.
+
+This heuristic is admissible because it never overestimates the actual c
+ost. It might not be perfect, as it doesn't account for walls, but it 
+should guide the A* algorithm effectively towards the goal of eating all 
+pellets while ensuring optimality.
+--------------------------------------------------------------------------
+2a. yes bc real cost of hypothenus is bigger than any of the one side
+square root of 2 is 1.4, its still bigger than 1
+
+2b. no if x-x is 1 + y-y is 1
+1.444<2
+
+2c. choose the more dominant one 
+maybe hsld(n) bc its more dominant than h1(n)
+--------------------------------------------------------------------------
+3a.
+given that a heuristic h(G)=0, where G is goal state,prove that if h is 
+consistent, then it must be admissible (think of path algorithm takes)
+
+Certainly, let's prove that if a heuristic h(G) for a goal state G is 0 
+and h is consistent, then it must be admissible.
+
+First, let's define the terms:
+
+1. Admissible Heuristic: A heuristic h is admissible if it never overestimates 
+the true cost to reach the goal from any given state. Mathematically, for all 
+states S, h(S) ≤ cost(S, G), where cost(S, G) is the actual cost from state S 
+to the goal G.
+
+2. Consistent Heuristic (also known as the Monotonicity Property): A heuristic 
+h is consistent if, for every state S and its successor state S', the estimated 
+cost from S to G is not greater than the estimated cost from S to S' plus the 
+estimated cost from S' to G. Mathematically, for all states S and S', 
+h(S) ≤ h(S') + cost(S, S').
+
+Now, let's prove that if h(G) = 0 and h is consistent, then it must be admissible.
+
+We'll use proof by contradiction. Suppose h is not admissible, which means there 
+exists a state S where h(S) > cost(S, G).
+
+Let's consider the path from S to G that the algorithm takes:
+
+S → S1 → S2 → ... → Sn → G
+
+According to the consistency property:
+
+h(S) ≤ h(S1) + cost(S, S1)
+h(S1) ≤ h(S2) + cost(S1, S2)
+...
+h(Sn-1) ≤ h(Sn) + cost(Sn-1, Sn)
+
+Now, we know that h(G) = 0 (given), and by summing up the above inequalities:
+
+h(S) ≤ h(S1) + cost(S, S1) ≤ h(S2) + cost(S1, S2) ≤ ... ≤ h(Sn) + cost(Sn-1, Sn) 
++ cost(Sn, G)
+
+Since h(G) = 0, this simplifies to:
+
+h(S) ≤ cost(S, S1) + cost(S1, S2) + ... + cost(Sn-1, Sn) + cost(Sn, G)
+
+Now, if we look at the right-hand side of the inequality, it represents the 
+actual cost from state S to G, following the path S → S1 → S2 → ... → Sn → G.
+
+So, we have:
+
+h(S) ≤ cost(S, G)
+
+But this contradicts our assumption that h(S) > cost(S, G). Therefore, 
+our initial assumption that h is not admissible must be false.
+
+Hence, if h(G) = 0 and h is consistent, then it must be admissible, as it 
+does not overestimate the true cost to reach the goal.
+
+
+
+
+tree search -> admissible but no need to be consistent
+graph search -> must be both admissible and consistent
+
+(b) Give an example of an admissible heuristic function that is not consistent.
+
+Consider a simplified pathfinding problem on a grid where you can move in 
+four directions: up, down, left, and right. In this grid, there are no obstacles, 
+and each move has a cost of 1.
+
+Now, let's define a heuristic h(n) for any given state n (where n represents 
+a grid cell):
+
+h(n) = Manhattan distance from n to the goal cell
+
+In this case, the Manhattan distance is the sum of the absolute differences 
+in the x and y coordinates between the current cell n and the goal cell. This 
+heuristic is admissible because it never overestimates the true cost to reach 
+the goal; it provides a lower bound on the actual cost.
+
+However, it is not consistent because it doesn't consider the cost of moving 
+between states. A consistent heuristic should satisfy the triangle inequality: 
+h(n) ≤ cost(n, n') + h(n'), where n' is a successor state of n, and cost(n, n') 
+is the cost to move between n and n'. In this heuristic, h(n) might not always 
+be less than or equal to the cost of moving to a successor state plus h(n'). 
+For example, it might underestimate the cost in certain cases, leading to inconsistency.
+
+
+--------------------------------------------------------------------------
+
+4a.
+f(fa) = g(Fa) + h(fa)
+0 + |160-176|
+
+4b.
+prove h(n) is an admissible heuristic
+
+h(n) = |hSLD(Craiov)−hSLD(n)|
+triangle inequality 
+
+--------------------------------------------------------------------------
+
+5. optimal -> never overestimate
+but inconsistent -> triangle equality may not hold 
+
+b can be either 0,1,2
+choose 2 bc larger heuristic more dominant, no need generate so many nodes
+
+tree search
+h(a) = 5
+h(s) = 7
+h(b) = 2
+h(g) = 0
+
+from s to a and B
+f-value for a = 2+5
+f-value for b is = 4 +2
+choose B
+f-value for a = 4+1+5
+f-value for g is = 4+4+0
+f-value for s = 4+4+7
+choose A
+f-value for s = 2+2+7
+f-value for b is = 2+1+2
+choose B
+f-value for a = 4+5
+f-value for g is = 7+0
+f-value for s = 7+7
+choose G
+
+graph search
+same as tree but if its alr generated, wont generate again
+but wont find optimum goal
+in graph search, to find 
+f-value is non decreasing
+in non consistent heuristic, grpah cannot find bc f value is decreasing
+so if its consistent, once we find g it will be optimal
+
+
+
+
+In A* search, the optimality guarantee holds when using a consistent 
+heuristic (also known as monotonic) h(n), not just an admissible heuristic. 
+A heuristic is consistent if, for every node n and every successor n' of n 
+generated by any action a, the following inequality holds:
+
+h(n) ≤ c(n, a, n') + h(n')
+
+In simpler terms, a consistent heuristic should satisfy the triangle inequality. 
+Admissible heuristics (those that never overestimate the true cost) are a subset 
+of consistent heuristics.
+
+Now, let's consider the case where h(n) is admissible but inconsistent and show 
+how it can lead to non-optimal solutions in A* search using a graph. We assume 
+h(G) = 0 for the goal node G.
+
+Consider the following graph:
+   S
+  / \
+ A   B
+ |   |
+ G   G
+In this graph:
+
+S is the start node.
+A and B are two successor nodes of S.
+G is the goal node.
+Let's assign heuristic values:
+
+h(S) = 2
+h(A) = 1
+h(B) = 0 (since it's the goal node)
+h(G) = 0
+
+This heuristic is admissible because it never overestimates the true cost to 
+reach the goal. However, it is inconsistent because it doesn't satisfy the 
+triangle inequality. Specifically, for node A, h(A) = 1, but h(G) + c(A, G) + h(G) 
+= 0 + 1 + 0 = 1, 
+and 1 is not less than or equal to 1. Therefore, it's inconsistent.
+
+Now, let's see how A* with this inconsistent heuristic behaves:
+
+A* starts at S and expands A first because h(A) is the lowest.
+Then, it expands G (the goal) since it's a successor of A.
+Finally, A* expands B.
+The path S -> A -> G -> B is found, but it's not optimal because it goes through G unnecessarily. The optimal path is simply S -> B.
+
+
+6. (Extra & Optional) Would A* work with negative edge weights? Assume no negative
+cycles. If yes, prove it; otherwise, provide a counterexample. What if there are
+negative cycles?
+
+
+if there is a negative loop, there is no admissible heuristic function 
+as it can be negative infinity
+will always expand lowest path cost, wont ever go to goal
+optimal-> cannot have negative or zero loop
+
+

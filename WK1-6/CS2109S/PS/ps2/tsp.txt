@@ -1,0 +1,13 @@
+Input:
+Current route: [A, B, C, D]
+
+Possible pairwise swaps:
+
+Swap A and B: [B, A, C, D]
+Swap A and C: [C, B, A, D]
+Swap A and D: [D, B, C, A]
+Swap B and C: [A, C, B, D]
+Swap B and D: [A, D, C, B]
+Swap C and D: [A, B, D, C]
+Output:
+New routes: [[B, A, C, D], [C, B, A, D], [D, B, C, A], [A, C, B, D], [A, D, C, B], [A, B, D, C]]
