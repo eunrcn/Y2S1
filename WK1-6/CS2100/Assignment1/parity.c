@@ -7,7 +7,17 @@
 // Calculate and return the parity byte 
 // for an array of bytes, using ODD parity.
 uint8_t findParity(uint8_t *array, uint8_t len) {
-    return 0;
+  uint8_t parity = 0;
+  for (int bit = 0; bit < 8; bit++) {
+    uint8_t count = 0;
+    for (int i = 0; i < len; i++) {
+      count += (array[i] >> bit) & 1;
+    }
+    if (count % 2 == 0) {
+      parity |= (1 << bit);
+    }
+  }
+  return parity;
 }
 
 // (Done for you). 
@@ -44,11 +54,18 @@ uint8_t finddec(char nibble) {
 // the string "3F".
 
 uint8_t hex2dec(char *byte) {
-    // Converts 2-digit hexadecimal number in "byte"
-    // into decimal. Complete this function in a 
-    // "return" statement. E.g. return bytes[1] + byte[2];
-    // No credit if you use >1 line.
-    return 0;
+  uint8_t result = 0;
+  for (int i = 0; i < 2; i++) {
+    char c = byte[i];
+    if (c >= '0' && c <= '9') {
+      result = result * 16 + (c - '0');
+    } else if (c >= 'A' && c <= 'F') {
+      result = result * 16 + (c - 'A' + 10);
+    } else if (c >= 'a' && c <= 'f') {
+      result = result * 16 + (c - 'a' + 10);
+    }
+  }
+  return result;
 }
 
 // Converts a string of hexadecimal numbers into an array of 
@@ -60,6 +77,13 @@ uint8_t hex2dec(char *byte) {
 // You may want to look at the strtok function.
 
 void string2bytes(char *str, uint8_t *bytes, uint8_t *len) {
+  *len = 0;
+  char *token = strtok(str, " ");
+  while (token != NULL) {
+    bytes[*len] = hex2dec(token);
+    (*len)++;
+    token = strtok(NULL, " ");
+  }
 }
 
 // Receives a string of bytes in hexadecimal, and returns the parity
@@ -67,5 +91,10 @@ void string2bytes(char *str, uint8_t *bytes, uint8_t *len) {
 // str = String of bytes in hexadecimal separated by spaces
 // E.g. "08 1C 4B 1E". Do not use the 0x prefix for the bytes.
 uint8_t calculateParity(char *str) {
-    return 0;
+  uint8_t len = strlen(str) / 3; // Assuming valid input
+  uint8_t bytes[len];
+
+  string2bytes(str, bytes, &len);
+
+  return findParity(bytes, len);
 }
