@@ -1,0 +1,27 @@
+int t0 = v * 4;
+int* s5 = (int*)((char*)A + t0);
+int* t1 = (int*)((char*)B + (ctr * 4));
+int* t0_ptr = (int*)((char*)A + (ctr * 4));
+
+a:
+    int t2 = (*t0_ptr < *s5) ? 1 : 0;
+    if (t2 == 0)
+        goto c;
+
+    int t2_val = *t0_ptr;
+    int t3_val = *t1;
+
+    int t4 = (t2_val < t3_val) ? 1 : 0;
+    if (t4 != 0)
+        goto b;
+
+    *t0_ptr = t2_val;
+    *t1 = t3_val;
+
+b:
+    t0_ptr = (int*)((char*)t0_ptr + 4);
+    t1 = (int*)((char*)t1 + 4);
+    goto a;
+
+c:
+// ... (Code for label 'c' goes here)

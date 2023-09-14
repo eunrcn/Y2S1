@@ -1,3 +1,73 @@
+recap:
+
+r format-add sub and or nor
+r formt opcode is all 0
+function
+rs rt rd
+rd i the value to store to
+
+add s0 s1 s2
+add rd rs rt (structure is different)
+
+shamt-only relevant to shift operations
+0x20 = 10 0000 for function
+shift rd rt shamt
+for arithmetic operation, rd rs rt
+for shift operation, rd rt shamt (rs is 0)
+
+i format-addi andi lw sw beq ori bne
+opcode rs rt immediate
+target register is not rt to receive the result
+since no more rd
+
+for loading, rs is Source
+rt is target
+for load instruction, must be imme value
+no such thing as having 3 register in load instruction
+ld/st rt imme(rs)
+
+logic-rt rs c16
+branch-rs rt label
+label=how far away from mip
+1
+2
+3
+4
+from 1 to 4
+label/immediate value = 2
+dont count next instruction
+bc pc +4 will increment to next instruction alr
+pc + 4 + (imme x 4)
+
+immediate not enough to jump to anywhere in address
+bc both jump and branching got limited bits of 16 bits 
+but memory is 32 bits
+
+
+1
+2
+3
+4
+5
+from 4 to 1
+since pc + 4 will go to 5
+imme = 4
+
+
+
+j format - jump
+
+isnt address 32 bits?
+last 2 bits will always be 00
+mips choose to take 4 most significant bits from pc+4
+if youre add the most bottom, cant jump back up
+
+whenever we get target address, last 2 bits i 00
+first 4 bits take from pc+4
+convert between instruction to hexa and hexa back to instruction
+
+
+
 addi $t0, $s0, 0   # Copy the base address of array A from $s0 to $t0
 addi $t1, $s1, 0   # Copy the base address of array B from $s1 to $t1
 loop:
@@ -11,6 +81,62 @@ skip:
 addi $t0, $t0, 4  # Move the pointer in array A to the next element (increment by 4 bytes)
 addi $t1, $t1, 4  # Move the pointer in array B to the next element (increment by 4 bytes)
 bne $t3, $zero, loop  # Branch back to "loop" if $t3 is not zero
+
+
+correct answer:
+addi 
+to let lo = 0
+let hi = size-1
+matched =1
+
+loop:
+lo<hi?
+exit if lo>=hi
+(use slt and bed to implement blt)
+exit if match ==0
+
+loading memory: first prepare address in a register
+then load using that address (with offset if neccesary)
+addr of str [lo]:
+add t1, s4,s0
+how come can just add directly?
+bc string is just a character array
+char is 1 byte
+in another senario is we have int array, cannot just add directly
+bc one element is 4 byte
+in the event its a int, need to sll
+
+t2=str[lo]:
+lb t2 0(t1)
+since we alr prepare the address in the above instruction
+we can jsut load it in now
+
+addr of str[hi]
+t4=str[hi]
+
+compare str[lo] str[hi]
+matched=0
+j loop/ j endw
+
+else lo++
+hi--
+
+endw: j loop
+exit:
+
+
+using arrary pointer:
+why do we use lb instead of lw:
+lw need to shift the offset first 
+bc cannot just add one byte one byte, need add 4 bytes per element
+so need to shift by 2 if wanna use lb
+
+instead of comparing lo and hi, compare address of lo and hi
+
+its the same thing its just whether i want to find address of 
+str[lo] and str[hi] first or see which one bigger 
+
+
 
 
 a. The purpose of register $t1 in this code is to iterate through 
@@ -149,13 +275,35 @@ ADDI $s1 $s1 0x0001
 j loop
 exit
 
-3b.
+
+correct answer:
+s1 =17=10001
+addi do rs first then rt
+
+j loop
+calculate the address of loop
+plus 4 
+004000028 -> 0040002C
+remove first 4 bits and last 2 bits
+081000B
+
+2b. set something to t0
+to test it out
+
 $s1 is initially set to 0. In each iteration of the loop, 
 $s1 is incremented by 1, and $t0 is divided by 2. 
 This process continues until $t0 becomes 0, at which point s1 will 
 contain the count of how many times $t0 was divided by 2.
 
-4a. 
+counting how many times power of 2 the value has
+so its floor of log2
+s1=floor of log2(t0)
+
+3a.
+srl s4,s4,1
+after get addr load
+lw t1, 0(t0)
+
 loop:
     slt $t9, $s3, $s2   # Check if low > high
     bne $t9, $zero, end # If low > high, exit the loop (not found)
@@ -189,5 +337,16 @@ loopEnd:
 end:
     # The complete binary search implementation
 
-4b. 17
-4c. 
+3b. 17 (its only 16)
+3c. 0xFFFFF00 + (17x4)= 0xFFFFF44
+after getting address of loopend
+removing the first 4 bits and last 2 bits, we put this into 
+the immediate field 
+opcode of jump is = 000010
+
+is the second j lpend different from the first call?
+for jump instruction, we have absolute address of where we are going to
+but for branch instruction its relative address
+branch-relative
+jump-absolute
+

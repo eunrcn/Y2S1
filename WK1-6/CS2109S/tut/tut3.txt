@@ -1,3 +1,21 @@
+recap:
+local search sometimes will get caught in local max so 
+need random restart 
+
+adversial search
+play ahead and play against other players
+minimax algorithms
+both players play best
+
+alpha beta pruning
+result is same as minimax algorithms
+but we prune away some branches that wont affect the result
+1. alpha beta, every node is initialized with parent node
+2. if max player, update alpha
+3. if min player, update beta
+4. is alpha>or equal to beta, prune
+
+
 (a) Two possible reasons why informed search might be a bad idea 
 for solving Nonogram puzzles:
 
@@ -12,6 +30,51 @@ puzzles is challenging. The heuristics would need to capture the complex
 relationships between rows and columns, making it computationally expensive 
 and potentially not very informative. It can be hard to come up with a 
 good heuristic that guides the search efficiently.
+
+
+
+q2:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+q3:
+why informed search not good idea?
+- seach space is very large 2 to power of n x n
+- no need care about past, only int in goal
+
+state representation
+- n by n boolean matrix
+
+intial state
+- everything is 0
+
+goal state
+- fulfill row and column constraints
+
+transition function
+- if that row is 3, we shift a block of 3 left and right
+
+evaluation function
+- number of violated constraint
+
 
 i. Define a Candidate Solution:
 The candidate solution represents the current state of the Nonogram grid. 
@@ -102,6 +165,3 @@ Hybrid Approaches: Combine local search with other techniques, such
 as genetic algorithms or constraint propagation, to improve the search's 
 ability to escape local minima.
 
-
-
-A=7,8,9,10,...
