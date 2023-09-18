@@ -1,0 +1,97 @@
+1a. construct decision tree
+income:
+over 10k: 2R 5A 
+0-10k: 1R 2A
+
+credit history:
+bad: 3R
+good: 7A
+
+debt:
+low: 2R 5A
+high: 1R 2A
+
+first layer: credit history
+
+
+2a.
+import numpy as np
+
+# Define the design matrix X and target vector Y
+X = np.array([[1, 6, 4, 11],
+              [1, 8, 5, 15],
+              [1, 12, 9, 25],
+              [1, 2, 1, 3]])
+
+Y = np.array([20, 30, 50, 7])
+
+# Calculate the coefficients using the Normal Equation
+w = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(Y)
+
+# The resulting coefficients w
+print(w)
+
+The matrix may not be invertible under certain conditions, typically
+ when the columns of X are linearly dependent or when 
+X is not full rank. This situation can occur if you 
+have redundant or highly correlated features in your 
+dataset. In such cases, you can consider the following 
+approaches:
+Feature Selection or Reduction: 
+Remove or combine highly correlated features to reduce 
+multicollinearity. This can make the matrix more invertible.
+Regularization: Use regularization techniques like Ridge 
+regression or Lasso regression, which add a penalty term 
+to the cost function to prevent overfitting and help 
+make the matrix invertible.
+
+
+Huber Loss (Smooth Mean Absolute Error):
+
+Huber loss is a compromise between Mean Absolute Error 
+(MAE) and Mean Squared Error (MSE). It combines the 
+robustness of MAE for small errors and the differentiability 
+of MSE for large errors.
+Huber loss uses a threshold parameter (δ) that determines 
+when to switch from the quadratic (MSE-like) to the linear 
+(MAE-like) component.
+It is less sensitive to outliers compared to MSE and provides
+ a smoother transition around the threshold.
+
+ 
+ During the training of machine learning models, adjusting 
+ the learning rate (α) can significantly impact the convergence 
+ and performance of the model. Here are some strategies for 
+ modifying the learning rate during training to enable better 
+ convergence:
+
+Learning Rate Annealing (Learning Rate Schedule):
+
+Decreasing the learning rate over time is a common strategy. 
+This process is known as learning rate annealing or scheduling.
+Initially, you can start with a relatively high learning rate 
+to allow the model to make large updates in the early stages of 
+training. As training progresses, gradually reduce the learning rate.
+Common annealing strategies include step decay (reducing the 
+learning rate by a fixed factor after a certain number of epochs),
+ exponential decay, or using a piecewise constant schedule.
+Learning rate schedules can help the model converge faster in 
+the initial phases and then fine-tune more slowly as it approaches 
+convergence.
+
+Adaptive Learning Rate Methods:
+Adaptive learning rate methods dynamically adjust the learning 
+rate during training based on the progress of the optimization.
+Examples include Adam, RMSprop, and Adagrad. These methods use 
+information about past gradients and other factors to compute 
+per-parameter learning rates.
+Adaptive methods can be effective in many cases because they 
+automatically adjust learning rates for different parameters 
+and moments in training.
+
+Cyclical Learning Rates:
+Cyclical learning rates involve periodically cycling the learning 
+rate within a predefined range during training.
+This approach can help the model escape local minima by temporarily
+increasing the learning rate. It is known as "learning rate restarts."
+It's important to choose an appropriate range for the learning rate cycle.

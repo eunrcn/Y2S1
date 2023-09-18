@@ -54,18 +54,7 @@ uint8_t finddec(char nibble) {
 // the string "3F".
 
 uint8_t hex2dec(char *byte) {
-  uint8_t result = 0;
-  for (int i = 0; i < 2; i++) {
-    char c = byte[i];
-    if (c >= '0' && c <= '9') {
-      result = result * 16 + (c - '0');
-    } else if (c >= 'A' && c <= 'F') {
-      result = result * 16 + (c - 'A' + 10);
-    } else if (c >= 'a' && c <= 'f') {
-      result = result * 16 + (c - 'a' + 10);
-    }
-  }
-  return result;
+  return (finddec(byte[0]) * 16) + (finddec(byte[1]));
 }
 
 // Converts a string of hexadecimal numbers into an array of 
