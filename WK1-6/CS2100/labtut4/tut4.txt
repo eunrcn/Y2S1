@@ -1,8 +1,29 @@
+1a. 
+16 bit and 5 bitaddress
+class a = 5 bit for address, 11 bits for opcode
+class b = 10 bits for address, 5 bits for opcode
+
+min = 
+less restrictive is A 
+A is 00000 (5 0 and 6 bits cna be random)
+B is 2 power 5 minus 1
+(2 power 6 - 1) + (2 power 5 x 1) = 63 + 32 = 95
+
+max = 
+more restrictive is B, so B is 000000
+A is (2 power 6 - 1) x 2 power 5 = 2016
+2016 + 1 for b = 2017
+
 a. branch greater than
-bgt r1, r2, L
+
+use $at when we breaking psuedo instruction 
+into smaller atomic instruction 
+
+** bgt r1, r2, L
 if r1>r2, will branch to L
 branch is relative, jump is absolute
 
+** instead of t0, can use $at 
 r1 big then branch
 slt t0 r2 r1 //r2 small than t0 = 1
 bne t0 zero L 
@@ -28,11 +49,20 @@ to load it from memory or perform complex calculations
 
 lui t0, 0xAAAA // upper bits is AAAA, lower bits is 0s
 ori t0, t0, 0xF0F0 // lower bits will be set here
+ori uses zero extention which means it wont 
+fuck up the other bits
+
+addi uses sign extention so if we are loading the lower 16
+bits and the 15th bit is 1, it will sign extent
+and make eveyrthing 1 
 
 e. no operation
 null operation
 sll $zero, $zero, 0  
 # shift $zero left by 0 bits (i.e., do nothing)
+its a r format instruction so opcode is zero
+sll is function 0 also 
+so its perfeect bc its 0x00000000
 
 ------------------------------------------------------------
 q3. 
