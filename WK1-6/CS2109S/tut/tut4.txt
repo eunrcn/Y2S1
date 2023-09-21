@@ -1,3 +1,60 @@
+recap:
+case 1: random
+antropy will be 1
+
+case 2: deterministic
+antropy will be 0
+
+the entropy vs probablity curve will be sad face
+entrop can be used to determine probability
+
+decision tree
+4 samples
+calculate antropy = 1 bc its random, 50 50 split
+apply mileage
+4 samples have bden split into 2 option 
+if the splitted nodes are still 50 50, its antropy is also 1
+
+how to calculate total antropy
+total weighted antropy 
+
+
+antropy for deterministic decision tree is deterministic
+ig (root) = remainder (child)
+1-(2/4 x 0 + 2/4 x 0) = 1
+the one with higher information gain is better
+
+
+linear regression
+solution 1: gradient descent
+solution 2: normal Equation
+
+
+
+-----------------------------------------------------------
+first check result after selecting each value 
+income: 5A 2R vs 2A 1R
+credit history: 3R vs 7A
+debt: 2R 5A vs 1R 2A 
+
+credit history is the best attribute
+antropy = 0
+debt and income antropy is more than 0
+
+remainder is weighted sum of 
+WEIGHTover=weight in the box/ total number of weight
+
+7/10 x ig + 3/10 x ig 
+
+ig = 1 - remainder(income)
+
+
+higher information gain means good
+if one side has all samples of the sample type,
+then other side will have the further decision tree
+
+
+
 1a. construct decision tree
 income:
 over 10k: 2R 5A 
@@ -13,7 +70,7 @@ high: 1R 2A
 
 first layer: credit history
 
-
+-----------------------------------------------------------
 2a.
 import numpy as np
 
