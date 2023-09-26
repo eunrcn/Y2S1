@@ -53,6 +53,18 @@ higher information gain means good
 if one side has all samples of the sample type,
 then other side will have the further decision tree
 
+final decision tree not even deterministic
+
+leaf node with minimum of 3 training data
+merge the bad nodes into the top and mkae it 3 bad nodes
+
+how to mitigate influence of inconsistent data?
+- preprocess data to make sure no inconsistent values
+delete a data
+- pruning to remove branches and nodes, min sample
+pruning just take the majority
+- collect more data on new features
+to differentiability
 
 
 1a. construct decision tree
@@ -72,6 +84,11 @@ first layer: credit history
 
 -----------------------------------------------------------
 2a.
+
+add a bias of 1, 1, 1, 1 to X and it becomes 4x4
+y is 4x1
+
+
 import numpy as np
 
 # Define the design matrix X and target vector Y
@@ -88,12 +105,17 @@ w = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(Y)
 # The resulting coefficients w
 print(w)
 
+
+[ 4.  -5.5 -7.   7. ]
+y=4 -5.5x1 -7x2 +7x3 
+
 The matrix may not be invertible under certain conditions, typically
  when the columns of X are linearly dependent or when 
 X is not full rank. This situation can occur if you 
 have redundant or highly correlated features in your 
 dataset. In such cases, you can consider the following 
 approaches:
+
 Feature Selection or Reduction: 
 Remove or combine highly correlated features to reduce 
 multicollinearity. This can make the matrix more invertible.
@@ -104,7 +126,6 @@ make the matrix invertible.
 
 
 Huber Loss (Smooth Mean Absolute Error):
-
 Huber loss is a compromise between Mean Absolute Error 
 (MAE) and Mean Squared Error (MSE). It combines the 
 robustness of MAE for small errors and the differentiability 
@@ -123,7 +144,6 @@ It is less sensitive to outliers compared to MSE and provides
  convergence:
 
 Learning Rate Annealing (Learning Rate Schedule):
-
 Decreasing the learning rate over time is a common strategy. 
 This process is known as learning rate annealing or scheduling.
 Initially, you can start with a relatively high learning rate 
@@ -152,3 +172,34 @@ rate within a predefined range during training.
 This approach can help the model escape local minima by temporarily
 increasing the learning rate. It is known as "learning rate restarts."
 It's important to choose an appropriate range for the learning rate cycle.
+
+
+-----------------------------------------------------------
+q3. 
+
+MAE is better bc MSE the different is sqaured and outlier
+have higher impact 
+
+loss functions to handle outliers more gracefully
+minimize influence of outliers
+- huber loss = inliers use 
+- log cosh loss =
+differentiate between inlier and outlier
+
+-----------------------------------------------------------
+q4. 
+
+y = x2
+dy/dx = 2x
+x' = x - dy/dx x learning rate
+   = x - 2x x learning rate
+   = x (1-2learning rate)
+
+what can be done to learning rate of improve convergence
+adjust learning rate such that it is high at the start and 
+low at the end
+
+so that at the start it can quickly go to the middle
+and once it is nearing the middle/convergence 
+decrease learning rate through course of training 
+to make sure it ca converge and wont move to other place
