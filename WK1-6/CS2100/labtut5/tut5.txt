@@ -1,0 +1,51 @@
+address of array + 1 is equivalent to adding the whole array first then plus one
+
+q1. 
+rd 1 and rd 2 has to be pointers
+bc need to send multiple outputs, so we will pass by pointers
+
+cannot memread and memwrite both be 1 so need show error
+just return datamem(address)
+
+datamemory(address) = wrdata
+return 0
+
+q2. macro processing
+its for when we dk the input size
+32 bit long int or 5 bit long int
+dont know the size
+whenevr N appear, can stand for any value
+
+q3. 
+what if we want keep same alignment using exact bitwidth
+6+5+5+5+5+5
+struct {
+    target : 26
+    opcode : 5
+} attribute (packed) j;
+
+mac uses little endian
+from right to left
+so front of code is below the target
+
+can split struct into 3 type
+j i r
+put from bottom up cause little endian
+imme
+returnrs
+opcode
+
+this is a way to not have to specify rs rt or imme value
+can just throw in the bits and specify format
+
+q4. 
+regdst is just for rtype
+how to differentiate r type from the rest 
+opcode of 00
+
+alusrc=1 for i type instruction lw and sw 
+
+memread only happen for loadword
+use opcode to identify loadword
+
+

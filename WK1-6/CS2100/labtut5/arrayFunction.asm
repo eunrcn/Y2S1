@@ -6,8 +6,12 @@ newl:  .asciiz "\n"
        .text
 main:
 	# Print the original content of array
-	# setup the parameter(s)
+	# setup the parameter
+	la $a0, array # storing the array in a0
+	li $a1, 10 # storing number of elements in a1
+
 	# call the printArray function
+	jal printArray 
 
 	# Ask the user for two indices
 	li   $v0, 5         	# System call code for read_int
@@ -20,11 +24,19 @@ main:
 
 	# Call the findMin function
 	# setup the parameter(s)
+	sll $t0, $t0, 2 # first pointer x4 to move to correct array pos
+	sll $t1, $t1, 2 # second pointer x4 to move to correct arrat pos
+
+	la $t8, array # load array address to t8
+	add $a0, $t8, $t0 # add the first pointer to the array
+	add $a1, $t8, $t1 # add the second pointer to the end of the array
+
 	# call the function
-
-
+	jal findMin 			
+				
 	# Print the min item
 	# place the min item in $t3	for printing
+	lw $t3, 0($v0)
 
 	# Print an integer followed by a newline
 	li   $v0, 1   		# system call code for print_int
@@ -36,8 +48,10 @@ main:
     syscall       		# print newline
 
 	#Calculate and print the index of min item
-	
 	# Place the min index in $t3 for printing	
+	la $t8, array
+	sub $t3, $t4, $t8
+	srl $t3, $t3, 2 # divide t3 by 4 so that it converts it into word index 
 
 	# Print the min index
 	# Print an integer followed by a newline
@@ -51,7 +65,7 @@ main:
 	
 	# End of main, make a syscall to "exit"
 	li   $v0, 10   		# system call code for exit
-	syscall	       		# terminate program
+	syscall	       	# terminate program
 	
 
 #######################################################################
@@ -62,22 +76,22 @@ main:
 #Registers used: $t0, $t1, $t2, $t3
 #Assumption: Array element is word size (4-byte)
 printArray:
-	addi $t1, $a0, 0	# $t1 is the pointer to the item
-	sll  $t2, $a1, 2	# $t2 is the offset beyond the last item
-	add  $t2, $a0, $t2 	# $t2 is pointing beyond the last item
+	addi $t1, $a0, 0	#$t1 is the pointer to the item
+	sll  $t2, $a1, 2	#$t2 is the offset beyond the last item
+	add  $t2, $a0, $t2 	#$t2 is pointing beyond the last item
 l1:	
 	beq  $t1, $t2, e1
-	lw   $t3, 0($t1)	# $t3 is the current item
+	lw   $t3, 0($t1)	#$t3 is the current item
 	li   $v0, 1   		# system call code for print_int
-    addi $a0, $t3, 0   	# integer to print
-    syscall       		# print it
+     	addi $a0, $t3, 0    	# integer to print
+     	syscall       		# print it
 	addi $t1, $t1, 4
-	j    l1				# Another iteration
+	j l1				# Another iteration
 e1:
 	li   $v0, 4   		# system call code for print_string
-    la   $a0, newl    	# 
-    syscall       		# print newline
-	jr   $ra			# return from this function
+     	la   $a0, newl    	# 
+     	syscall       		# print newline
+	jr $ra			# return from this function
 
 
 #######################################################################
@@ -86,7 +100,24 @@ e1:
 #Output: $v0 contains the address of min item 
 #Purpose: Find and return the minimum item 
 #              between $a0 and $a1 (inclusive)
-#Registers used: <Fill in with your register usage>
+#Registers used: $t3, $t4, $t5, $t6, $t7
 #Assumption: Array element is word size (4-byte), $a0 <= $a1
 findMin:
+	#initializing
+	add $t4, $a0, $zero #pointer to the min element 
+	add $t5, $a0, $zero #pointer to the current element
+	lw $t6, 0($a0) # t6 --> current min
+
+	loop:	slt $s1, $a1, $t5
+		bne $s1, $zero, exit
+		lw $t7, 0($t5) # t7 --> current element
+		slt $s2, $t7, $t6 # current element less than current min?
+		beq $s2, $zero, incr
+		add $t6, $t7, $zero # t6 --> updated min. Transferred from t7		
+		add $t4, $t5, $zero # t4 --> pointer to current minimum
+	incr:	addi $t5, $t5, 4 # t5 --> increment pointer 
+		j loop
+	exit:	
+	add $t3, $t6, $zero # transfer min from t6 to t3
+	la $v0, 0($t4) # v0 --> address of min item
 	jr $ra			# return from this function
