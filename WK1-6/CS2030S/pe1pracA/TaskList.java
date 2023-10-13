@@ -10,13 +10,7 @@ import java.util.Scanner;
  * Encapsulate a list of TODO tasks.
  */
 class TaskList {
-  private int numOfTasks; // The number of tasks in the list.
-  private Array<Integer> typeArray;  // Store the type of Task i.
-  private Array<String> descriptionArray; // Store the description of Task i.
-  private Array<Boolean> isCompletedArray; // Store whether Task i is completed or not.
-  private Array<String> assigneeArray; // Store the name of the assignee of Task i (if any).
-  private Array<Integer> dueInDaysArray; // Store the num of days before Task i is due (if any).
-  private String errorMsg; // Store an error message.
+  private Array<Task> allTasks; // Store the task.
 
   // The types of tasks
   private static final int ANYTIME = 0;
@@ -44,10 +38,7 @@ class TaskList {
    * @param sc The Scanner to read from.
    **/
   private TaskList(Scanner sc) {
-    boolean success = this.loadTasks(sc);
-    if (!success) {
-      System.out.println(this.errorMsg);
-    }
+    this.loadTasks(sc);
   }
 
   /**
@@ -55,26 +46,23 @@ class TaskList {
    * @param sc The scanner to load from.
    * @return false if the input contains a wrong type; true otherwise.
    **/
-  private boolean loadTasks(Scanner sc) {
-    this.numOfTasks = Integer.parseInt(sc.nextLine().trim());
-    this.typeArray = new Array<Integer>(this.numOfTasks);
-    this.descriptionArray = new Array<String>(this.numOfTasks);
-    this.isCompletedArray = new Array<Boolean>(this.numOfTasks);
-    this.dueInDaysArray = new Array<Integer>(this.numOfTasks);
-    this.assigneeArray = new Array<String>(this.numOfTasks);
+  private void loadTasks(Scanner sc) {
+    int numOfTasks = Integer.parseInt(sc.nextLine().trim());
+    this.allTasks = new Array<Task>(numOfTasks);
 
     int i = 0;
-    while (sc.hasNext()) {
-      String text = sc.nextLine().trim();
-      String[] arguments = text.split(",");
-      boolean success = this.createTask(i, arguments);
-      if (!success) {
-        sc.close();
-        return false;
+    try {
+      while (sc.hasNext()) {
+        String text = sc.nextLine().trim();
+        String[] arguments = text.split(",");
+        this.createTask(i, arguments);
+        i = i + 1;
       }
-      i = i + 1;
+    } catch(WrongTaskTypeException e) {
+      System.out.println(e.getMessage());
+    } finally {
+      sc.close();
     }
-    return true;
   }
 
   /**
@@ -83,81 +71,40 @@ class TaskList {
    * @param args The arguments read from the input.
    * @return false if the input contains a wrong type; true otherwise.
    **/
-  private boolean createTask(int i, String[] args) {
+  private void createTask(int i, String[] args) throws WrongTaskTypeException {
     int type = Integer.parseInt(args[0]);
-    this.typeArray.set(i, type);
     String description = args[1];
-    this.descriptionArray.set(i, description);
-    this.isCompletedArray.set(i, false);
 
     if (type == TaskList.ANYTIME) {
-      // no further action
-
+      this.allTasks.set(i, new AnytimeTask(description));
     } else if (type == TaskList.DEADLINE) {
       int dueInDays = Integer.parseInt(args[2]);
-      this.dueInDaysArray.set(i, dueInDays);
-
+      this.allTasks.set(i, new DeadlineTask(description, dueInDays));
     } else if (type == TaskList.ASSIGNABLE) {
       int dueInDays = Integer.parseInt(args[2]);
       String assignees = args[3];
-      this.dueInDaysArray.set(i, dueInDays);
-      this.assigneeArray.set(i, assignees);
-
+      this.allTasks.set(i, new DelegatedTask(description, dueInDays, assignees));
     } else {
-      this.errorMsg = "Invalid task type in input: " + type;
-      return false;
+      throw new WrongTaskTypeException(type);
     }
-    return true;
   }
 
   /**
    * Print the description of all tasks.
    **/
   public void printTaskDescriptions() {
-    for (int i = 0; i < this.numOfTasks; i++) {
-      String description = this.descriptionArray.get(i);
+    for (int i = 0; i < this.allTasks.length(); i++) {
+      String description = this.allTasks.get(i).toString();
       System.out.println(i + " " + description);
     }
-  }
-
-  /**
-   * Return a string representation of a task.
-   * @param i The index of the task.
-   * @return The string representation of Task i.
-   **/
-  private String taskDetailsOf(int i) {
-    String s = "";
-
-    boolean isCompleted = this.isCompletedArray.get(i);
-    if (isCompleted) {
-      s += "[X] ";
-    } else {
-      s += "[ ] ";
-    }
-
-    String description = this.descriptionArray.get(i);
-    s += description;
-
-    int type = this.typeArray.get(i);
-    if (type == TaskList.DEADLINE) {
-      int dueInDays = this.dueInDaysArray.get(i);
-      s += " | Due in " + dueInDays + " days";
-
-    } else if (type == TaskList.ASSIGNABLE) {
-      int dueInDays = this.dueInDaysArray.get(i);
-      String assignee = this.assigneeArray.get(i);
-      s += " | Due in " + dueInDays + " days";
-      s += " | Assigned to " + assignee;
-    }
-    return s;
   }
 
   /**
    * Print the details of all tasks.
    **/
   public void printTaskDetails() {
-    for (int i = 0; i < this.numOfTasks; i++) {
-      System.out.println(i + " " + this.taskDetailsOf(i));
+    for (int i = 0; i < this.allTasks.length(); i++) {
+      System.out.println(i + " " + this.allTasks.get(i).getDetails());
     }
   }
 
@@ -167,15 +114,8 @@ class TaskList {
    **/
   public int getRewardPoints() {
     int sum = 0;
-    for (int i = 0; i < this.numOfTasks; i++) {
-      int type = this.typeArray.get(i);
-      if (type == TaskList.DEADLINE || type == TaskList.ASSIGNABLE) {
-        boolean isCompleted = this.isCompletedArray.get(i);
-        if (isCompleted) {
-          int dueInDays = this.dueInDaysArray.get(i);
-          sum += dueInDays;
-        }
-      }
+    for (int i = 0; i < this.allTasks.length(); i++) {
+      sum += this.allTasks.get(i).getRewards(0);
     }
     return sum;
   }
@@ -184,13 +124,9 @@ class TaskList {
    * Print all the tasks that are due today.
    **/
   public void printDueToday() {
-    for (int i = 0; i < this.numOfTasks; i++) {
-      int type = this.typeArray.get(i);
-      if (type == TaskList.DEADLINE || type == TaskList.ASSIGNABLE) {
-        int dueInDays = this.dueInDaysArray.get(i); 
-        if (dueInDays == 0) {
-          System.out.println(i + " " + this.taskDetailsOf(i));
-        }
+    for (int i = 0; i < this.allTasks.length(); i++) {
+      if (this.allTasks.get(i).isDueToday()) {
+        System.out.println(i + " " + this.allTasks.get(i).getDetails());
       }
     }
   }
@@ -199,23 +135,9 @@ class TaskList {
    * Remind users about all incomplete tasks with deadline.
    */
   public void remindAll() {
-    for (int i = 0; i < this.numOfTasks; i++) {
-      int type = this.typeArray.get(i);
-      boolean isCompleted = this.isCompletedArray.get(i);
-      if (!isCompleted) {
-
-        if (type == TaskList.ASSIGNABLE) {
-          String description = this.descriptionArray.get(i);
-          String assignee = this.assigneeArray.get(i);
-          System.out.println("Sending a reminder to complete \"" + description + "\" to " 
-              + assignee);
-
-        } else if (type == TaskList.DEADLINE) {
-          String description = this.descriptionArray.get(i);
-          int dueInDays = this.dueInDaysArray.get(i); 
-          System.out.println("The task \"" + description + "\" is due in " + dueInDays 
-              + " days"); 
-        }
+    for (int i = 0; i < this.allTasks.length(); i++) {
+      if (this.allTasks.get(i).needReminder()) {
+        System.out.println(this.allTasks.get(i).remind());
       }
     }
   }
@@ -225,6 +147,6 @@ class TaskList {
    * @param i The index of the task to complete.
    */
   public void completeTask(int i) {
-    this.isCompletedArray.set(i, true);
+    this.allTasks.get(i).complete();
   }
 }

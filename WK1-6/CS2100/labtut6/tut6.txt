@@ -1,0 +1,99 @@
+consensus law
+split the 2 terms into 2 separate terms
+y.z 
+= 1.y.z (identity)
+= (x + x') .y.z (complement)
+= x.y.z + x'.y.z (distributive)
+
+q2a
+simplify the eqn
+(x + y∙z')∙(y' + y)  + x'∙(y∙z' + y) 
+= (x + y∙z') + x'∙(y∙z' + y) (identity)
+= x + y∙z' + x'∙y (absorption 1)
+= (x+y)+y.z (absorption 2)
+= x+y (a1)
+
+brackets dont matter!
+
+q2b 
+G(p,q,r,s) =  M(5, 9, 13)
+make a truth table for 
+pqrs
+when pqrs spells 5,9,13, G=0
+G = (p+q'+r+s') this is 5 
++ (p'+q+r+s') this is 9
++ (p'+q'+r+s') this is 13
+
+since all 3 end with r+s' we can use distributive law
+= (r+s') + (p+q').(p'+q).(p'+q')
+= (r+s') + (p+q').(p'+ q.q')
+= (r+s') + (p+q').(p'+ 0)
+= (r+s') + (p+q').p'
+= (r+s') + (p+q')
+
+
+
+
+F(p.q)=M(1,2,3)=M(0)
+
+
+3a.
+0   1  5  4
+2   3  7  6
+10 11 15 14
+8   9 13 12
+
+
+3b.
+
+3d. How many PIs (prime implicants) are there in the K-map? 
+List out all the PIs.
+
+3d
+find a minterm that is only covered by 1 implicants
+if that term is covered only by a'.c'
+then a'.c' is essential
+
+X -> dont care -> good to reduce number of literals
+from 4 to 3
+
+3g
+to find pos
+negate the kmap
+0 become 1
+1 become 0
+x stay as X
+
+draw prime implicants -> fuck ton
+essential PI -> choose those minterms with only 1  PI around it
+
+3h 
+3 product terms -> 3 and gate
+first gate a'.d'
+next and gate a'.c'
+b'.c'.d
+
+OR the 3 and gates together
+and itll be T
+
+draw a NAND gate
+invert twice once after AND and once before OR
+so itll be the same
+all inverters change to NAND
+
+
+make truth table
+make k maps
+from k maps get sop
+input -> output 
+
+4b. building k map froms the values in 4a
+count max terms and minterms that corresponds to 1
+build 1 kmap for x y and z
+
+x = k'.l.m'.n + k.l'.m.n'
+
+output when 0000?
+x=0
+y=0
+z=1

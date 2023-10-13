@@ -1,0 +1,100 @@
+true positive rate = TP/actual positive
+=2/2
+false positive rate = FP/actual negative
+=2/2
+
+actual positive = 2
+actual negative = 2
+all data sample has probality higher than treshold so all 4 values will be 
+positive
+so 2 TP 
+2 FP
+
+TPR against FPR is 1 1 
+treshold 2 now 
+1 TP
+2fp
+
+tpr = 2/2
+fpr = 1/2 
+false positive rate is smaller 
+curve move left 1 step bc its TPR against FPR
+TPR always same
+so the graph will coninue to move leftwards as treshold increases
+
+graph will proceed to move downwards as treshold increases
+find negative sample, roc curve will go left
+find positive sample, roc curve will go downwards
+area under curve is 1
+means we cna find all the negative before positive
+perfect separation
+
+if we find - + - + then area under curve will be less than 1
+bc we go left down left down
+auc-roc curve can use to tell how well classifier can separate 
+pos and negative
+
+precision recall f1 roc
+
+actual vs prediction
+
+
+tumor detection
+1. regular check up maximise precision -> min false positive
+2. alr got cancer, maximise recall -> min false negative 
+
+plagarism nice prof
+max precision
+
+credit care fraud detection
+be as sure as u can -> min false negative
+be as accurate as u can -> min false positive
+use both
+
+use elipse use a and b to draw decision boundary
+use jsut a, draw 1 line
+
+
+--------------------------------------------------------------
+w transpose x = w x x for all values
+log the hw(x) 
+
+--------------------------------------------------------------
+select inappropriate evaluation matrix
+1. accuracy
+2. auc roc
+3. mse 
+4. mae 
+5. binary cross entropy
+
+for example: in dataset we have 2 samples
+1 positive and 1 negative
+model 1 : y = [0.4, 0.6]
+model 2 : y = [0.1, 0.9]
+if trshold is 0.5
+classfication result for model 1 is 0 1
+for model 2 is 0 1 as well
+so both can predict correctly
+so performance for classfication for model 1 and 2 is same
+bc we only need to pay attention to 'predicted' label
+
+
+but 3,4,5 will say model 2 is better
+bc they use probality for evaluation
+but right now they are the same
+but we only need the final label predicted by model
+
+--------------------------------------------------------------
+logistic regression for multiclass classfication
+multiply w and x and add up
+get p for all three animals
+select the one with the highest values
+and regard the sample as the animal w highest values
+matching 
+
+can we train the model while keeping the weight of the previous model?
+if the current models will classify the new class as one of the old class
+then no bc the old dataset is not trained for the new class
+
+but if the current models do not classify the new class as one of the old/current class
+then we can train the model to classify the new class  
