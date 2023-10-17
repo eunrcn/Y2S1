@@ -171,6 +171,8 @@ uint8_t ALUControl(uint8_t _ALUOp, uint8_t _funct) {
     default:
       // Handle any other funct values if necessary
       // Raise an error if none of the cases match.
+      error("Unknown funct code: 0x%X", _funct);
+      break;
     }
   } else { // Non R-type
     if (_ALUOp == 0)
@@ -222,8 +224,91 @@ int32_t ALU(int32_t in0, int32_t in1, uint8_t ALUControl, bool *ALUiszero) {
 
 #ifndef ASSIGNMENT2_QUESTION3
 
-void execute(uint32_t insn) {
-  // TODO: Implement execute
+void execute(uint32_t instruction) {
+  // Decode stage
+  struct instr decoded_instr;
+  decode(instruction, &decoded_instr);
+
+  // Control unit
+  bool RegDst, ALUSrc, MemtoReg, RegWrite, MemRead, MemWrite, Branch;
+  uint8_t ALUOp;
+  Control(decoded_instr.opcode, &RegDst, &ALUSrc, &MemtoReg, &RegWrite,
+          &MemRead, &MemWrite, &Branch, &ALUOp);
+
+  // Register file read
+  int32_t RD1, RD2;
+  if (decoded_instr.rs > 0) {
+    RegFile(decoded_instr.rs, decoded_instr.rt, 0, 0, &RD1, &RD2, false);
+  } else {
+    error("Invalid register access.");
+    return; // Exit the execute method due to the error
+  }
+
+  // ALU calculation
+  int32_t ALU_result;
+  bool ALU_is_zero;
+  uint8_t ALUOpControl = ALUControl(ALUOp, decoded_instr.funct);
+  if (ALUSrc) {
+    ALU_result = ALU(RD1, decoded_instr.immed, ALUOpControl, &ALU_is_zero);
+  } else {
+    ALU_result = ALU(RD1, RD2, ALUOpControl, &ALU_is_zero);
+  }
+
+  // Memory stage (only for load and store instructions)
+  int32_t MemData;
+  if (MemRead) {
+    if (ALU_result >= 0 && ALU_result < MAX_MEM) {
+      MemData = Memory(ALU_result, 0, true, false);
+    } else {
+      error("Invalid memory read address.");
+      return; // Exit the execute method due to the error
+    }
+  } else if (MemWrite) {
+    if (ALU_result >= 0 && ALU_result < MAX_MEM) {
+      Memory(ALU_result, RD2, false, true);
+    } else {
+      error("Invalid memory write address.");
+      return; // Exit the execute method due to the error
+    }
+  }
+
+  // Write-back stage
+  int32_t WriteData = MemtoReg ? MemData : ALU_result;
+  int32_t WriteReg = RegDst ? decoded_instr.rd : decoded_instr.rt;
+
+  if (RegWrite) {
+    int32_t RD1 = -1; // Sentinel value to indicate "no value"
+    int32_t RD2 = -1; // Sentinel value to indicate "no value"
+
+    if (WriteReg > 0) {
+      if (decoded_instr.rs > 0) {
+        RD1 = _RF[decoded_instr.rs]; // Read from source register 1
+      }
+
+      if (decoded_instr.rt > 0) {
+        RD2 = _RF[decoded_instr.rt]; // Read from source register 2
+      }
+
+      if (RD1 != -1 && RD2 != -1) {
+        RegFile(0, 0, WriteReg, WriteData, &RD1, &RD2, true);
+      } else {
+        // Handle sentinel values indicating "no value"
+        error("Sentinel value in RD1 or RD2.");
+        return; // Exit the execute method due to the error
+      }
+    } else {
+      // Handle invalid register write access (e.g., raise an error)
+      error("Invalid register write access.");
+      return; // Exit the execute method due to the error
+    }
+  }
+
+  // Update the PC
+  if (Branch && ALU_is_zero) {
+    _PC += (decoded_instr.immed << 2);
+  } else {
+    _PC += 4;
+  }
 }
 
 #endif // End of Assignment 2, Question 3
