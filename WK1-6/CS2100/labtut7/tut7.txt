@@ -1,0 +1,127 @@
+1. valid or invalid input
+if number of 1 is more than 1, then its valid
+if there are 0 or only 1 1, then its invalid
+firstly check how many ones there are
+a + b + c into a full adder to see carry and sum
+
+can i put carry and sum into the 2 bit adder? into x1 and x0
+where to put d and e
+e put into y0
+put 0 into y1
+put d into cin
+cannot be d and e into y1 y0 bc they can output 3
+
+put the 3 output into x0 x1 x2
+then compare it to 1 to see if its more or less than 1
+x3 can be nothing ==0
+largest msb is largest subscript
+
+how to abcd + 1 /2 
+use a 4 bit adder to plus one 
+to shift right by 1 we can put EFGH in the output
+
+but since its a adder cannot shift by 1 value
+if D is 0, ABC = FGH
+if D is 1, FGH = ABC + 1
+draw out truth table and visualise to spot the pattern
+
+
+----------------------------------------------------------
+1. valid or invalid input
+if number of 1 is more than 1, then its valid
+if there are 0 or only 1 1, then its invalid
+firstly check how many ones there are
+a + b + c into a full adder to see carry and sum
+
+can i put carry and sum into the 2 bit adder? into x1 and x0
+where to put d and e
+e put into y0
+put 0 into y1
+put d into cin
+cannot be d and e into y1 y0 bc they can output 3
+
+put the 3 output into x0 x1 x2
+then compare it to 1 to see if its more or less than 1
+x3 can be nothing ==0
+largest msb is largest subscript
+
+how to abcd + 1 /2 
+use a 4 bit adder to plus one 
+to shift right by 1 we can put EFGH in the output
+
+but since its a adder cannot shift by 1 value
+if D is 0, ABC = FGH
+if D is 1, FGH = ABC + 1
+draw out truth table and visualise to spot the pattern
+
+
+
+
+4221 to 8421
+the pattern is PQR + 1 / 2
+
+0PQR 
+0WXY
+into a1h since Add-1-then-Half
+
+
+----------------------------------------------------------
+2. 
+
+4221 to 8421
+the pattern is PQR + 1 / 2
+
+0PQR 
+0WXY
+into a1h since Add-1-then-Half
+
+
+----------------------------------------------------------
+3. 
+given 4 bit number
+output 51xA + (20x(B%2)) = 122
+each digit will have their own representation
+
+5xA
+has 8 bits bc 4 bit per digit
+whenever multiply by 5 will have something that ends with 5
+2nd digit is either 5 or 0
+if a0 is 1 then 2nd digit will be 5 == 0101
+can hook up a0 to 2nd digit
+
+5x10 x A + A 
+to + A just hook up a3a2a1a0 to f3f2f1f0
+
+20 x b0 
+2 x b0 shift left by 1
+
+can redo if uw
+
+----------------------------------------------------------
+4. 
+a. 
+compare abcd to 11
+take when x>y = 1
+
+b. 
+0 6 9 15
+draw out truth table
+if abc is a palindrome then G = 1
+can read from front and back
+
+so compare
+AB == DC if equal then its G 
+
+c. 
+draw truth table
+if B and C equal then output a 1
+
+d. 
+when d = 1 then z = 1
+but exclude 15 = 1111 bc z is 0
+so need to know how to exclude
+abcd compare with 1111 if abcd is less then z 
+exclude all those where D is 0 
+compare abcd to dddd
+
+
