@@ -3,29 +3,21 @@ import numpy as np
 def initialize_board():
     return np.zeros((6, 6), dtype=int)
 
-def print_board(board):
+def display_board(board):
     for row in board:
         print(" ".join(map(str, row)))
 
-
-def rotate_quadrant(board, player):
-    while True:
-        try:
-            quad_row = int(input(f"Player {player}, enter the quadrant row (0-1) to rotate: "))
-            quad_col = int(input(f"Player {player}, enter the quadrant column (0-1) to rotate: "))
-            if 0 <= quad_row < 2 and 0 <= quad_col < 2:
-                board[3*quad_row:3*quad_row+3, 3*quad_col:3*quad_col+3] = np.rot90(board[3*quad_row:3*quad_row+3, 3*quad_col:3*quad_col+3], k=1)
-                break
-            else:
-                print("Invalid quadrant. Try again.")
-        except ValueError:
-            print("Invalid input. Try again.")
-
 def apply_move(board, turn, row, col, rot):
-    if board[row, col] == 0:
-        board[row, col] = turn
-        board[3*row:3*row+3, 3*col:3*col+3] = np.rot90(board[3*row:3*row+3, 3*col:3*col+3], k=rot)
-        return board
+    # Create a new board to avoid modifying the original
+    new_board = board.copy()
+    
+    if new_board[row, col] == 0:
+        new_board[row, col] = turn
+        if np.any(new_board[3 * row:3 * row + 3, 3 * col:3 * col + 3] != 0):
+            new_board[3 * row:3 * row + 3, 3 * col:3 * col + 3] = np.rot90(new_board[3 * row:3 * row + 3, 3 * col:3 * col + 3], k=rot)
+    
+    return new_board
+
 
 def check_move(board, row, col):
     return board[row, col] == 0
@@ -80,11 +72,6 @@ def check_victory(board, player, test_case=False):
         if np.all(board != 0):
             return 3  # Draw
 
-    if test_case:
-        # Check that you are not changing the input
-        if not np.array_equal(board, board_out):
-            print("Problem: you are changing the input!")
-
     # No winner yet
     return 0
 
@@ -100,7 +87,7 @@ def menu():
     print("Welcome to Pentago!")
 
     while True:
-        print_board(board)
+        display_board(board)
         if player == 1:
             print(f"Player {player}'s turn:")
             apply_move(board, player, row, col, rot)
@@ -110,19 +97,17 @@ def menu():
             print(f"Computer plays: row {row}, col {col}, rotation {rot}")
             apply_move(board, player, row, col, rot)
 
-        rotate_quadrant(board, player)
-
         # Check for victory and draw within the loop
         if check_victory(board, player):
-            print_board(board)
+            display_board(board)
             if player == 1:
                 print(f"Player {player} wins!")
             else:
                 print("Computer wins!")
             break
         if is_draw(board):
-            print_board(board)
-            print("It's a draw!")
+            display_board(board)
+            print("3")
             break
 
         player = 3 - player  # Switch player (1 -> 2, 2 -> 1)

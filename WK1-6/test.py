@@ -91,7 +91,7 @@ def test():
         [2,1,2,2,1,2]])
     board_tmp = apply_move(board_in,1,1,1,7)
     if ((board_tmp == board_out).all()): print("test apply_move 1 - OK !")
-    else: print("test apply_move 1 - Problem in the apply_move function output  !")
+    else: print(board_tmp)
     
     # insert marble with rot 
     board_in = np.array([     
