@@ -8,20 +8,15 @@ def display_board(board):
         print(" ".join(map(str, row)))
 
 def apply_move(board, turn, row, col, rot):
-    if board[row,col] == 0:
-        board[row, col] = turn 
-        np.any(board[3 * row:3 * row + 3, 3 * col:3 * col + 3] != 0)
-        board[3 * row:3 * row + 3, 3 * col:3 * col + 3] = np.rot90(board[3 * row:3 * row + 3, 3 * col:3 * col + 3], k=rot)
-        return board
-    elif board[row, col] == 2:
-        if turn == 1:
-            board[row, col] = 0
-            return board
-    elif board[row, col] == 1:
-        if turn == 2:
-            board[row, col] = 0
-            return board
+# Create a new board to avoid modifying the original
+    new_board = board.copy()
 
+    if new_board[row, col] == 0:
+        new_board[row, col] = turn
+        if np.any(new_board[3 * row:3 * row + 3, 3 * col:3 * col + 3] != 0):
+            new_board[3 * row:3 * row + 3, 3 * col:3 * col + 3] = np.rot90(new_board[3 * row:3 * row + 3, 3 * col:3 * col + 3], k=rot)
+
+    return new_board
 
 def check_move(board, row, col):
     return board[row, col] == 0
@@ -41,8 +36,6 @@ def computer_move(board, turn, level):
 def display_board(board):
     for row in board:
         print(" ".join(map(str, row)))
-
-import numpy as np
 
 def check_victory(board, player, test_case=False):
     if test_case:
@@ -85,6 +78,34 @@ def is_draw(board):
     # Check if the board is full (no empty spaces)
     return np.all(board != 0)
 
+def display_board(board):
+    # Create a horizontal border
+    border = "+-------" * 6 + "+"
+
+    # Display the top border
+    print(border)
+
+    for i, row in enumerate(board):
+        # Display row numbers
+        print("|", end=" ")
+
+        for j, cell in enumerate(row):
+            symbol = " "
+            if cell == 1:
+                symbol = "X"
+            elif cell == 2:
+                symbol = "O"
+
+            print(f"{symbol:^6}|", end=" ")
+
+        print("\n" + border)
+
+    print("\n   ", end="")
+    for col in range(6):
+        print(f"{col:^7}", end="")
+
+    print("\n")
+
 def menu():
     board = initialize_board()
     player = 1
@@ -95,24 +116,28 @@ def menu():
         display_board(board)
         if player == 1:
             print(f"Player {player}'s turn:")
-            row = int(input("Enter the row (0-5): "))
-            col = int(input("Enter the column (0-5): "))
-            rot = int(input("Enter the rotation (0-3): "))
-            apply_move(board, player, row, col, rot)
+            try:
+                row = int(input("Enter the row (0-5): "))
+                col = int(input("Enter the column (0-5): "))
+                rot = int(input("Enter the rotation (0-3): "))
+            except ValueError:
+                print("Invalid input. Please enter valid row, column, and rotation values.")
+                continue
+
+            if 0 <= row < 6 and 0 <= col < 6 and 0 <= rot < 4:
+                board = apply_move(board, player, row, col, rot)
+            else:
+                print("Invalid input. Please enter valid row, column, and rotation values.")
         else:
             print("Computer's turn:")
             row, col, rot = computer_move(board, player, level=1)
             print(f"Computer plays: row {row}, col {col}, rotation {rot}")
-            apply_move(board, player, row, col, rot)
+            board = apply_move(board, player, row, col, rot)
 
-        # Check for victory and draw within the loop
         result = check_victory(board, player)
         if result == 1:
             display_board(board)
-            if player == 1:
-                print(f"Player {player} wins!")
-            else:
-                print("Computer wins!")
+            print(f"Player {player} wins!")
             break
         elif result == 2:
             display_board(board)
@@ -123,7 +148,11 @@ def menu():
             print("It's a draw!")
             break
 
-        player = 3 - player  # Switch player (1 -> 2, 2 -> 1)
+        player = 3 - player
+
+if __name__ == "__main__":
+    menu()
+
 
 if __name__ == "__main__":
     menu()

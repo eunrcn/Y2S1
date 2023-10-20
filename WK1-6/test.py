@@ -73,8 +73,7 @@ def test():
     apply_move(board_in,2,1,1,7)
     if ((board_in == board_out).all()): print("test apply_move input - OK !")
     else: print("test apply_move input - Problem: you are changing the input  !")
-    print(board_in);
-    print(board_out);
+
     # insert marble with rot on empty submatrix
     board_in = np.array([     
         [0,0,0,1,2,1],
@@ -174,8 +173,8 @@ def test():
         [0,1,0,0,2,0],
         [0,0,0,0,2,0]])
     if check_victory(board, 1, 7)==2: print("test check_victory 4 - OK !")
-    else: print("test check_victory 4 - Problem in the check_victory function output !")
-    
+    else: print("test check_victory 4 - Problem in the check_victory function output !") 
+
     # win horizontal
     board = np.array([  
         [0,0,0,0,0,0],
