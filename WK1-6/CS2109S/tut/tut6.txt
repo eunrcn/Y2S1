@@ -1,0 +1,2 @@
+cost = 0 is the lowest
+

@@ -1,73 +1,128 @@
 import numpy as np
-import random
 
-# Define constants for player 1 and player 2
-PLAYER_1 = 1
-PLAYER_2 = 2
+def initialize_board():
+    return np.zeros((6, 6), dtype=int)
 
-# Define the game board as a 6x6 NumPy array
-board = np.zeros((6, 6), dtype=int)
+def print_board(board):
+    for row in board:
+        print(" ".join(map(str, row)))
 
-def display_board():
-    for row in range(6):
-        for col in range(6):
-            if board[row, col] == PLAYER_1:
-                print("X", end=" ")
-            elif board[row, col] == PLAYER_2:
-                print("O", end=" ")
+def check_win(board, player):
+    for i in range(6):
+        for j in range(6):
+            if (
+                (i + 4 < 6 and np.all(board[i:i+5, j] == player)) or
+                (j + 4 < 6 and np.all(board[i, j:j+5] == player)) or
+                (i + 4 < 6 and j + 4 < 6 and np.all(np.diag(board[i:i+5, j:j+5]) == player)) or
+                (i + 4 < 6 and j - 4 >= 0 and np.all(np.diag(np.fliplr(board[i:i+5, j-4:j+1])) == player))
+            ):
+                return True
+    return False
+
+def place_marble(board, player):
+    while True:
+        try:
+            row = int(input(f"Player {player}, enter the row (0-5) to place your marble: "))
+            col = int(input(f"Player {player}, enter the column (0-5) to place your marble: "))
+            if board[row, col] == 0:
+                board[row, col] = player
+                break
             else:
-                print(".", end=" ")  # You can use any character for empty spaces
-        print()  # Move to the next row
-    
-def check_victory(board,turn,rot):
-    # implement your function here
-    return -1
+                print("Invalid move. Try again.")
+        except (ValueError, IndexError):
+            print("Invalid input. Try again.")
+
+def rotate_quadrant(board, player):
+    while True:
+        try:
+            quad_row = int(input(f"Player {player}, enter the quadrant row (0-1) to rotate: "))
+            quad_col = int(input(f"Player {player}, enter the quadrant column (0-1) to rotate: "))
+            if 0 <= quad_row < 2 and 0 <= quad_col < 2:
+                board[3*quad_row:3*quad_row+3, 3*quad_col:3*quad_col+3] = np.rot90(board[3*quad_row:3*quad_row+3, 3*quad_col:3*quad_col+3], k=1)
+                break
+            else:
+                print("Invalid quadrant. Try again.")
+        except ValueError:
+            print("Invalid input. Try again.")
 
 def apply_move(board, turn, row, col, rot):
-    # Ensure the move is valid before applying it
-    if check_move(board, row, col):
-        # Place the marble of the current player (1 or 2) in the specified cell
+    if board[row, col] == 0:
         board[row, col] = turn
-        
-        # Apply the rotation to the corresponding sub-board
-        apply_rotation(board, row, col, rot)
-    
-    return board
+        board[3*row:3*row+3, 3*col:3*col+3] = np.rot90(board[3*row:3*row+3, 3*col:3*col+3], k=rot)
+        return board
 
-def apply_rotation(board, row, col, rot):
-    # Determine the sub-board coordinates
-    sub_row = row // 3
-    sub_col = col // 3
-    
-    # Determine the rotation direction (clockwise or counterclockwise)
-    clockwise = rot <= 4
-    
-    # Determine the number of rotations (1 to 4)
-    num_rotations = rot % 4
-    
-    # Rotate the sub-board
-    sub_board = board[sub_row * 3: (sub_row + 1) * 3, sub_col * 3: (sub_col + 1) * 3]
-    sub_board = np.rot90(sub_board, num_rotations, axes=(1, 0 if clockwise else 1))
-    board[sub_row * 3: (sub_row + 1) * 3, sub_col * 3: (sub_col + 1) * 3] = sub_board
-
-    
 def check_move(board, row, col):
-    # Check if row and col are within valid bounds (0 to 5)
-    if 0 <= row < 6 and 0 <= col < 6:
-        # Check if the cell is empty (0 represents an empty cell)
-        if board[row, col] == 0:
-            return True  # Move is valid
-    return False  # Move is not valid
+    return board[row, col] == 0
+
+def computer_move(board, turn, level):
+    # Implement computer's move logic here based on the provided level
+    # For example, you can generate random valid moves for level 1.
+    # For more advanced levels, you can implement a smarter AI.
+
+    # For now, let's assume a simple random move for demonstration.
+    while True:
+        row = np.random.randint(6)
+        col = np.random.randint(6)
+        if check_move(board, row, col):
+            return row, col, np.random.randint(4)  # Random rotation
+        
+def display_board(board):
+    for row in board:
+        print(" ".join(map(str, row)))
+
+def menu():
+    board = initialize_board()
+    player = 1
+
+    print("Welcome to Pentago!")
+
+    while True:
+        print_board(board)
+        if player == 1:
+            print(f"Player {player}'s turn:")
+            place_marble(board, player)
+        else:
+            print("Computer's turn:")
+            # Adjust the computer's move logic based on the desired level.
+            row, col, rot = computer_move(board, player, level=1)
+            print(f"Computer plays: row {row}, col {col}, rotation {rot}")
+            apply_move(board, player, row, col, rot)
+
+        if check_win(board, player):
+            print_board(board)
+            if player == 1:
+                print(f"Player {player} wins!")
+            else:
+                print("Computer wins!")
+            break
+
+        rotate_quadrant(board, player)
+        player = 3 - player  # Switch player (1 -> 2, 2 -> 1)
+
+    print_board(board)
+    print("It's a tie!")
 
 
-def computer_move(board,turn,level):
-    # implement your function here
-    return (0,0,0)
 
-def menu():  
-    # implement your function here
-    pass
+def main():
+    board = initialize_board()
+    player = 1
+
+    print("Welcome to Pentago!")
+
+    for _ in range(36):
+        print_board(board)
+        place_marble(board, player)
+        if check_win(board, player):
+            print_board(board)
+            print(f"Player {player} wins!")
+            break
+        rotate_quadrant(board, player)
+        player = 3 - player  # Switch player (1 -> 2, 2 -> 1)
+
+    else:
+        print_board(board)
+        print("It's a tie!")
 
 if __name__ == "__main__":
-    menu()
-    
+    main()
