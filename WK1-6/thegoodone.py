@@ -8,20 +8,11 @@ def display_board(board):
         print(" ".join(map(str, row)))
 
 def apply_move(board, turn, row, col, rot):
-    if board[row,col] == 0:
-        board[row, col] = turn 
-        np.any(board[3 * row:3 * row + 3, 3 * col:3 * col + 3] != 0)
-        board[3 * row:3 * row + 3, 3 * col:3 * col + 3] = np.rot90(board[3 * row:3 * row + 3, 3 * col:3 * col + 3], k=rot)
-        return board
-    elif board[row, col] == 2:
-        if turn == 1:
-            board[row, col] = 0
-            return board
-    elif board[row, col] == 1:
-        if turn == 2:
-            board[row, col] = 0
-            return board
-
+    if board[row, col] == 0:
+        board[row, col] = turn
+        if np.any(board[3 * row:3 * row + 3, 3 * col:3 * col + 3] != 0):
+            board[3 * row:3 * row + 3, 3 * col:3 * col + 3] = np.rot90(board[3 * row:3 * row + 3, 3 * col:3 * col + 3], k=rot)
+    return board
 
 def check_move(board, row, col):
     return board[row, col] == 0
@@ -80,6 +71,9 @@ def check_victory(board, player, test_case=False):
 
     # No winner yet
     return 0
+
+
+
 
 def is_draw(board):
     # Check if the board is full (no empty spaces)
