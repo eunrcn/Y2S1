@@ -7,30 +7,6 @@ def print_board(board):
     for row in board:
         print(" ".join(map(str, row)))
 
-def check_win(board, player):
-    for i in range(6):
-        for j in range(6):
-            if (
-                (i + 4 < 6 and np.all(board[i:i+5, j] == player)) or
-                (j + 4 < 6 and np.all(board[i, j:j+5] == player)) or
-                (i + 4 < 6 and j + 4 < 6 and np.all(np.diag(board[i:i+5, j:j+5]) == player)) or
-                (i + 4 < 6 and j - 4 >= 0 and np.all(np.diag(np.fliplr(board[i:i+5, j-4:j+1])) == player))
-            ):
-                return True
-    return False
-
-def place_marble(board, player):
-    while True:
-        try:
-            row = int(input(f"Player {player}, enter the row (0-5) to place your marble: "))
-            col = int(input(f"Player {player}, enter the column (0-5) to place your marble: "))
-            if board[row, col] == 0:
-                board[row, col] = player
-                break
-            else:
-                print("Invalid move. Try again.")
-        except (ValueError, IndexError):
-            print("Invalid input. Try again.")
 
 def rotate_quadrant(board, player):
     while True:
@@ -70,6 +46,53 @@ def display_board(board):
     for row in board:
         print(" ".join(map(str, row)))
 
+def check_victory(board, player, test_case=False):
+    if test_case:
+        # Check that you are not changing the input
+        board_out = board.copy()
+    
+    # Check for victory before the rotation
+    for i in range(6):
+        for j in range(6):
+            if (
+                (i + 4 < 6 and np.all(board[i:i+5, j] == player)) or  # Check rows
+                (j + 4 < 6 and np.all(board[i, j:j+5] == player)) or  # Check columns
+                (i + 4 < 6 and j + 4 < 6 and np.all(np.diag(board[i:i+5, j:j+5]) == player)) or  # Check diagonal
+                (i + 4 < 6 and j - 4 >= 0 and np.all(np.diag(np.fliplr(board[i:i+5, j-4:j+1])) == player))  # Check anti-diagonal
+            ):
+                return 1  # Player 1 wins
+
+    # Apply rotation and check for victory after the rotation
+    for rot in range(1, 9):
+        rotated_board = np.rot90(board, k=rot)
+        for i in range(6):
+            for j in range(6):
+                if (
+                    (i + 4 < 6 and np.all(rotated_board[i:i+5, j] == player)) or
+                    (j + 4 < 6 and np.all(rotated_board[i, j:j+5] == player)) or
+                    (i + 4 < 6 and j + 4 < 6 and np.all(np.diag(rotated_board[i:i+5, j:j+5]) == player)) or
+                    (i + 4 < 6 and j - 4 >= 0 and np.all(np.diag(np.fliplr(rotated_board[i:i+5, j-4:j+1])) == player))
+                ):
+                    return 1  # Player 1 wins
+
+    if not test_case:
+        # Check for a draw (full board with no winner)
+        if np.all(board != 0):
+            return 3  # Draw
+
+    if test_case:
+        # Check that you are not changing the input
+        if not np.array_equal(board, board_out):
+            print("Problem: you are changing the input!")
+
+    # No winner yet
+    return 0
+
+
+def is_draw(board):
+    # Check if the board is full (no empty spaces)
+    return np.all(board != 0)
+
 def menu():
     board = initialize_board()
     player = 1
@@ -80,49 +103,29 @@ def menu():
         print_board(board)
         if player == 1:
             print(f"Player {player}'s turn:")
-            place_marble(board, player)
+            apply_move(board, player, row, col, rot)
         else:
             print("Computer's turn:")
-            # Adjust the computer's move logic based on the desired level.
             row, col, rot = computer_move(board, player, level=1)
             print(f"Computer plays: row {row}, col {col}, rotation {rot}")
             apply_move(board, player, row, col, rot)
 
-        if check_win(board, player):
+        rotate_quadrant(board, player)
+
+        # Check for victory and draw within the loop
+        if check_victory(board, player):
             print_board(board)
             if player == 1:
                 print(f"Player {player} wins!")
             else:
                 print("Computer wins!")
             break
-
-        rotate_quadrant(board, player)
-        player = 3 - player  # Switch player (1 -> 2, 2 -> 1)
-
-    print_board(board)
-    print("It's a tie!")
-
-
-
-def main():
-    board = initialize_board()
-    player = 1
-
-    print("Welcome to Pentago!")
-
-    for _ in range(36):
-        print_board(board)
-        place_marble(board, player)
-        if check_win(board, player):
+        if is_draw(board):
             print_board(board)
-            print(f"Player {player} wins!")
+            print("It's a draw!")
             break
-        rotate_quadrant(board, player)
-        player = 3 - player  # Switch player (1 -> 2, 2 -> 1)
 
-    else:
-        print_board(board)
-        print("It's a tie!")
+        player = 3 - player  # Switch player (1 -> 2, 2 -> 1)
 
 if __name__ == "__main__":
-    main()
+    menu()
