@@ -72,8 +72,9 @@ def test():
     apply_move(board_in,1,1,1,7)
     apply_move(board_in,2,1,1,7)
     if ((board_in == board_out).all()): print("test apply_move input - OK !")
-    else: print("test apply_move input - Problem: you are changing the input  !")    
-       
+    else: print("test apply_move input - Problem: you are changing the input  !")
+    print(board_in);        
+    print(board_out);  
     # insert marble with rot on empty submatrix
     board_in = np.array([     
         [0,0,0,1,2,1],
@@ -91,7 +92,7 @@ def test():
         [2,1,2,2,1,2]])
     board_tmp = apply_move(board_in,1,1,1,7)
     if ((board_tmp == board_out).all()): print("test apply_move 1 - OK !")
-    else: print(board_tmp)
+    else: print("test apply_move 1 - Problem in the apply_move function output  !")
     
     # insert marble with rot 
     board_in = np.array([     
