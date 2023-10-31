@@ -1,3 +1,50 @@
+logistic regression got sigma and two class classification model has G
+decision rule g(z) positive if z mroe than 0
+negative if z is negative
+update weight w
+for perceptron learning algorithm
+
+sequentially process individual samples
+calculate mean/gradient ad only update weight once 
+
+use only one sample of update the weight
+if there are 10 data sample
+in each epoch we update the weight 10 times
+
+logic gatesuse to model and or and not
+step 1: initialize all weight to 0
+w = np.zeros () 
+step 2: y can only be 0 or 1
+step 3 : lr = 0.1
+
+update model for each misclassified instance
+step 4: w = w + lr * ??
+?? = use activation function 
+
+use for loop to select 1 data sample to update weight
+batch grad descent -> use all data samples
+
+use another for loop to use the data more than one time iteration 10 so that every data 
+sample will be used 10 times before we find correct solution
+
+step 5:
+modified sign function 
+z >= 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (a) To model the decision boundaries of the logical NOT, OR, and AND gates using perceptrons, you can set up the perceptrons as follows:
 
 Logical NOT Gate:
@@ -50,6 +97,14 @@ linearly separable. The AND operator's weight and bias settings
 will remain the same regardless of the order in which you 
 present the data samples.
 
+
+does order matter in batch grad descent? no
+does order matter in perceptino update rule? yes bc only choose 1 data sample
+order will influence number of steps and weight 
+1. reorder data points can help model converge faster
+
+
+
 Regarding Figure 1, the proposed model does not have high bias or 
 high variance. The perceptron network described for modeling XOR 
 is a simple model with fixed weights and biases. It has low 
@@ -59,7 +114,17 @@ given the correct inputs. High bias and high variance are typically
 associated with more complex models that may overfit or underfit 
 the data, which is not the case with this perceptron network for XOR.
 
+
+dont have high bias, is just right
+can perfectly classify positive and negative sample
+low bias = diff between predicted and real = 0 
+low variance = diff between all output value and its predicted value = 0 of 0
+
+
 -------------------------------------------------------------------
+multi layer perceptron has lower mse loss compared to single layer perception
+if multi layer perceptron still got mse, means it snot complicated enough
+
 The single-layer perceptron can only model linear relationships 
 between the input features and the output, while the multi-layer 
 perceptron (a neural network with hidden layers) can capture 
@@ -71,14 +136,15 @@ could be prone to overfitting if not appropriately regularized.
 Overfitting can result in poor generalization to new, unseen data.
 
 b. 
-Feature Engineering: Create new features that capture non-linear 
+Feature Mapping: Create new features that capture non-linear 
 relationships or interactions between the existing features. 
 This can help the single-layer perceptron better approximate 
 the underlying function.
 
-Regularization: Apply L1 or L2 regularization to prevent 
-overfitting. This adds a penalty term to the cost function, 
-encouraging the model to keep the weights small.
+map input x to x to power 2
+to capture complex rs 
+but can lead to overfitting
+if we only need x to power of 2 and we map to x to power of 10
 
 Advantages:
 Simplicity: The single-layer perceptron is straightforward and 
@@ -94,24 +160,12 @@ Potential Underfitting: It may struggle with complex datasets.
 (c) To improve the performance of the multi-layer perceptron, 
 consider the following techniques:
 
-Adjust Network Architecture: Experiment with the number of hidden 
-layers, the number of neurons in each layer, and the activation 
-functions. A more complex architecture might capture the data's 
-underlying patterns better.
+Adjust Network Architecture: Add more hidden 
+layers, to learn more complex patterns
 
-Regularization: Implement techniques like dropout, weight decay, 
-or early stopping to prevent overfitting.
+increased risk of overfitting
 
-Optimization Algorithms: Use advanced optimization algorithms 
-like Adam, RMSprop, or Adagrad to speed up convergence and 
-improve training.
-
-Batch Normalization: Apply batch normalization to stabilize and 
-accelerate training.
-
-Feature Scaling: Ensure that input features are properly scaled, 
-which can help with convergence and training stability.
-
-Hyperparameter Tuning: Experiment with different hyperparameters 
-(learning rate, batch size, etc.) to find the optimal configuration 
-for your specific problem.
+what is the diff between adding more perceptron or adding more hidden layers
+both is fine
+both can add more components/parameters and learn more complex patterns
+depends 
